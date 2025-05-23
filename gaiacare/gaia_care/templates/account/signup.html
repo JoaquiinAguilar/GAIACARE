@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+
+{% block title %}{% trans "Registro" %} - Gaia Care{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="card border-0 shadow">
+        <div class="card-body p-5">
+          <h1 class="text-center mb-4" style="font-family: 'Libre Bodoni', serif;">{% trans "Crear Cuenta" %}</h1>
+          
+          <p class="text-center mb-4">{% blocktrans %}¿Ya tienes una cuenta? <a href="{{ login_url }}" style="color: var(--dark-pink);">Inicia sesión</a>.{% endblocktrans %}</p>
+          
+          <form class="signup" id="signup_form" method="post" action="{% url 'account_signup' %}">
+            {% csrf_token %}
+            {{ form|crispy }}
+            {% if redirect_field_value %}
+            <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+            {% endif %}
+            
+            <div class="form-check mb-3">
+              <input class="form-check-input" type="checkbox" id="terms" name="terms" required>
+              <label class="form-check-label" for="terms">
+                {% blocktrans %}Acepto los <a href="#" style="color: var(--dark-pink);">Términos y Condiciones</a> y la <a href="#" style="color: var(--dark-pink);">Política de Privacidad</a>{% endblocktrans %}
+              </label>
+            </div>
+            
+            <button class="btn w-100 mb-3" type="submit" style="background-color: var(--dark-pink); color: white;">{% trans "Registrarse" %}</button>
+          </form>
+          
+          <div class="mt-4">
+            <p class="small text-center">Al registrarte, aceptas recibir nuestros correos informativos sobre productos y promociones. Puedes darte de baja en cualquier momento.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

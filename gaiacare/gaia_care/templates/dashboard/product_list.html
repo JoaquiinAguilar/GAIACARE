@@ -1,0 +1,151 @@
+{% extends "dashboard/base_dashboard.html" %}
+{% load static %}
+
+{% block dashboard_content %}
+<div class="content-header d-flex justify-content-between align-items-center">
+    <div>
+        <h1 class="content-title">Productos</h1>
+        <p class="text-muted">Gestiona tu catálogo de productos.</p>
+    </div>
+    <div>
+        <a href="{% url 'dashboard:product_create' %}" class="btn btn-dashboard">
+            <i class="bi bi-plus-circle"></i> Nuevo Producto
+        </a>
+    </div>
+</div>
+
+<!-- Filtros -->
+<div class="filters-panel">
+    <form method="get" action="{% url 'dashboard:product_list' %}">
+        <div class="row">
+            <div class="col-md-3 mb-3">
+                <label for="category" class="form-label">Categoría</label>
+                <select name="category" id="category" class="form-select">
+                    <option value="">Todas las categorías</option>
+                    {% for cat in categories %}
+                        <option value="{{ cat.id }}" {% if category_id == cat.id|stringformat:"s" %}selected{% endif %}>{{ cat.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="col-md-3 mb-3">
+                <label for="status" class="form-label">Estado</label>
+                <select name="status" id="status" class="form-select">
+                    <option value="">Todos los estados</option>
+                    <option value="available" {% if status == 'available' %}selected{% endif %}>Disponible</option>
+                    <option value="unavailable" {% if status == 'unavailable' %}selected{% endif %}>No disponible</option>
+                    <option value="featured" {% if status == 'featured' %}selected{% endif %}>Destacado</option>
+                    <option value="low_stock" {% if status == 'low_stock' %}selected{% endif %}>Stock bajo</option>
+                </select>
+            </div>
+            
+            <div class="col-md-4 mb-3">
+                <label for="search" class="form-label">Buscar</label>
+                <input type="text" name="search" id="search" class="form-control" placeholder="Nombre o descripción..." value="{{ search_query|default:'' }}">
+            </div>
+            
+            <div class="col-md-2 mb-3 d-flex align-items-end">
+                <button type="submit" class="btn btn-dashboard w-100">Filtrar</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<!-- Lista de productos -->
+<div class="dashboard-card">
+    {% if page_obj %}
+        <div class="table-responsive">
+            <table class="table dashboard-table">
+                <thead>
+                    <tr>
+                        <th>Imagen</th>
+                        <th>Nombre</th>
+                        <th>Categoría</th>
+                        <th>Precio</th>
+                        <th>Stock</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for product in page_obj %}
+                        <tr>
+                            <td>
+                                {% if product.get_main_image %}
+                                    <img src="{{ product.get_main_image.image.url }}" alt="{{ product.name }}" class="table-img">
+                                {% else %}
+                                    <img src="{% static 'images/placeholder.png' %}" alt="{{ product.name }}" class="table-img">
+                                {% endif %}
+                            </td>
+                            <td>{{ product.name }}</td>
+                            <td>{{ product.category.name }}</td>
+                            <td>${{ product.price }} MXN</td>
+                            <td>
+                                {% if product.stock < 5 %}
+                                    <span class="text-danger fw-bold">{{ product.stock }}</span>
+                                {% else %}
+                                    {{ product.stock }}
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if product.available %}
+                                    <span class="status-badge delivered">Disponible</span>
+                                {% else %}
+                                    <span class="status-badge cancelled">No disponible</span>
+                                {% endif %}
+                                
+                                {% if product.featured %}
+                                    <span class="status-badge confirmed">Destacado</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a href="{% url 'dashboard:product_detail' product.id %}" class="btn btn-sm btn-dashboard mb-1">
+                                    <i class="bi bi-pencil"></i> Editar
+                                </a>
+                                <a href="{% url 'products:product_detail' product.slug %}" class="btn btn-sm btn-dashboard-outline" target="_blank">
+                                    <i class="bi bi-eye"></i> Ver
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Paginación -->
+        {% if page_obj.has_other_pages %}
+            <nav class="mt-4">
+                <ul class="pagination justify-content-center">
+                    {% if page_obj.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page=1{% if category_id %}&category={{ category_id }}{% endif %}{% if status %}&status={{ status }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}">&laquo; Primera</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if category_id %}&category={{ category_id }}{% endif %}{% if status %}&status={{ status }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}">Anterior</a>
+                        </li>
+                    {% endif %}
+                    
+                    <li class="page-item active">
+                        <span class="page-link">Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</span>
+                    </li>
+                    
+                    {% if page_obj.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if category_id %}&category={{ category_id }}{% endif %}{% if status %}&status={{ status }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}">Siguiente</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% if category_id %}&category={{ category_id }}{% endif %}{% if status %}&status={{ status }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}">&raquo; Última</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        {% endif %}
+    {% else %}
+        <div class="text-center py-5">
+            <i class="bi bi-search" style="font-size: 3rem; color: #ddd;"></i>
+            <p class="mt-3">No se encontraron productos con los criterios de búsqueda.</p>
+            <a href="{% url 'dashboard:product_list' %}" class="btn btn-dashboard-outline mt-2">Ver todos los productos</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

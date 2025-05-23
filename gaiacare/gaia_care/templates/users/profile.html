@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %}Mi Perfil - Gaia Care{% endblock %}
+
+{% block content %}
+    <div class="container py-5">
+        <h1 class="section-title">Mi Perfil</h1>
+        
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <div class="card-header" style="background-color: var(--medium-pink);">
+                        <h5 class="mb-0">Información del Perfil</h5>
+                    </div>
+                    <div class="card-body text-center">
+                        <div class="mb-3">
+                            {% if user.profile.profile_picture %}
+                                <img src="{{ user.profile.profile_picture.url }}" alt="{{ user.username }}" class="rounded-circle img-fluid" style="width: 150px; height: 150px; object-fit: cover;">
+                            {% else %}
+                                <div class="rounded-circle d-flex align-items-center justify-content-center mx-auto" style="width: 150px; height: 150px; background-color: var(--light-pink); font-size: 48px; color: var(--dark-pink);">
+                                    {{ user.first_name|first }}{{ user.last_name|first }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <h5 class="mb-1">{{ user.get_full_name }}</h5>
+                        <p class="text-muted">{{ user.email }}</p>
+                        
+                        {% if user.profile.bio %}
+                            <div class="mt-3">
+                                <h6>Acerca de mí</h6>
+                                <p>{{ user.profile.bio }}</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="card mt-4">
+                    <div class="card-header" style="background-color: var(--medium-pink);">
+                        <h5 class="mb-0">Acciones</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">
+                                <a href="{% url 'orders:order_list' %}" class="text-decoration-none d-flex justify-content-between align-items-center">
+                                    Mis Pedidos
+                                    <i class="bi bi-arrow-right"></i>
+                                </a>
+                            </li>
+                            <li class="list-group-item">
+                                <a href="{% url 'account_email' %}" class="text-decoration-none d-flex justify-content-between align-items-center">
+                                    Gestionar Correos
+                                    <i class="bi bi-arrow-right"></i>
+                                </a>
+                            </li>
+                            <li class="list-group-item">
+                                <a href="{% url 'account_change_password' %}" class="text-decoration-none d-flex justify-content-between align-items-center">
+                                    Cambiar Contraseña
+                                    <i class="bi bi-arrow-right"></i>
+                                </a>
+                            </li>
+                            <li class="list-group-item">
+                                <a href="{% url 'account_logout' %}" class="text-decoration-none d-flex justify-content-between align-items-center">
+                                    Cerrar Sesión
+                                    <i class="bi bi-box-arrow-right"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header" style="background-color: var(--medium-pink);">
+                        <h5 class="mb-0">Editar Perfil</h5>
+                    </div>
+                    <div class="card-body">
+                        <form method="post" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    {{ user_form.first_name|as_crispy_field }}
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    {{ user_form.last_name|as_crispy_field }}
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                {{ user_form.phone_number|as_crispy_field }}
+                            </div>
+                            
+                            <div class="mb-3">
+                                {{ user_form.address|as_crispy_field }}
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    {{ user_form.city|as_crispy_field }}
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    {{ user_form.state|as_crispy_field }}
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                {{ user_form.postal_code|as_crispy_field }}
+                            </div>
+                            
+                            <div class="mb-3">
+                                {{ profile_form.profile_picture|as_crispy_field }}
+                            </div>
+                            
+                            <div class="mb-3">
+                                {{ profile_form.bio|as_crispy_field }}
+                            </div>
+                            
+                            <button type="submit" class="btn" style="background-color: var(--dark-pink); color: white;">
+                                Guardar Cambios
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

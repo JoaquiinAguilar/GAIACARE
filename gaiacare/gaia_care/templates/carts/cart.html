@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Carrito de Compras - Gaia Care{% endblock %}
+
+{% block content %}
+    <div class="cart-container">
+        <h1 class="cart-title">Tu Carrito de Compras</h1>
+        
+        {% if cart.items.count > 0 %}
+            {% csrf_token %}
+            
+            <div class="table-responsive mb-4">
+                <table class="cart-table">
+                    <thead>
+                        <tr>
+                            <th>Producto</th>
+                            <th>Precio</th>
+                            <th>Cantidad</th>
+                            <th>Total</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in cart.items.all %}
+                            <tr data-item-id="{{ item.id }}">
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="cart-product-image">
+                                            {% if item.product.get_main_image %}
+                                                <img src="{{ item.product.get_main_image.image.url }}" alt="{{ item.product.name }}">
+                                            {% else %}
+                                                <img src="{% static 'images/placeholder.png' %}" alt="{{ item.product.name }}">
+                                            {% endif %}
+                                        </div>
+                                        <div class="ms-3">
+                                            <a href="{% url 'products:product_detail' item.product.slug %}" class="text-decoration-none">
+                                                <h5 class="mb-0">{{ item.product.name }}</h5>
+                                            </a>
+                                            <div class="text-muted small">{{ item.product.description|truncatewords:10 }}</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>${{ item.product.price }} MXN</td>
+                                <td>
+                                    <div class="cart-quantity">
+                                        <button type="button" class="cart-quantity-btn update-cart-btn" data-item-id="{{ item.id }}" data-action="decrease">-</button>
+                                        <input type="number" class="cart-quantity-input" value="{{ item.quantity }}" min="1" max="{{ item.product.stock }}" readonly>
+                                        <button type="button" class="cart-quantity-btn update-cart-btn" data-item-id="{{ item.id }}" data-action="increase">+</button>
+                                    </div>
+                                </td>
+                                <td class="item-total">${{ item.get_total }} MXN</td>
+                                <td>
+                                    <button type="button" class="cart-remove-btn update-cart-btn" data-item-id="{{ item.id }}" data-action="remove">
+                                        <i class="bi bi-trash"></i> Eliminar
+                                    </button>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <form method="post" action="{% url 'carts:clear_cart' %}" class="mb-4">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-outline-danger">Vaciar Carrito</button>
+                    </form>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="cart-summary">
+                        <h3 class="cart-summary-title">Resumen del Pedido</h3>
+                        
+                        <div class="cart-summary-row">
+                            <div class="label">Subtotal</div>
+                            <div class="value">${{ cart.get_subtotal }} MXN</div>
+                        </div>
+                        
+                        <div class="cart-summary-row">
+                            <div class="label">Envío</div>
+                            <div class="value">Calculado al finalizar</div>
+                        </div>
+                        
+                        <div class="cart-summary-row cart-summary-total">
+                            <div class="label">Total</div>
+                            <div class="value">${{ cart.get_subtotal }} MXN</div>
+                        </div>
+                        
+                        <a href="{% url 'orders:checkout' %}" class="checkout-btn">Proceder al Pago</a>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <div class="cart-empty">
+                <div class="mb-4">
+                    <i class="bi bi-cart" style="font-size: 48px;"></i>
+                </div>
+                <h3>Tu carrito está vacío</h3>
+                <p>Parece que aún no has añadido ningún producto a tu carrito.</p>
+                <a href="{% url 'products:product_list' %}" class="btn" style="background-color: var(--dark-pink); color: white;">Continuar Comprando</a>
+            </div>
+        {% endif %}
+        
+        <div class="continue-shopping mt-5">
+            <a href="{% url 'products:product_list' %}">
+                <i class="bi bi-arrow-left"></i> Continuar Comprando
+            </a>
+        </div>
+    </div>
+{% endblock %}

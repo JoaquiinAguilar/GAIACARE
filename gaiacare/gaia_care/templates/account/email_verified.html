@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Correo Verificado" %} - Gaia Care{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="card border-0 shadow">
+        <div class="card-body p-5 text-center">
+          <div class="mb-4" style="font-size: 3rem; color: var(--dark-pink);">
+            <i class="bi bi-check-circle"></i>
+          </div>
+          
+          <h1 class="mb-4" style="font-family: 'Libre Bodoni', serif;">{% trans "¡Correo Verificado!" %}</h1>
+          
+          <p class="mb-4">{% trans "Tu dirección de correo electrónico ha sido verificada correctamente." %}</p>
+          
+          <div class="d-grid gap-2">
+            <a href="{% url 'core:home' %}" class="btn" style="background-color: var(--dark-pink); color: white;">{% trans "Ir a la página principal" %}</a>
+            <a href="{% url 'users:profile' %}" class="btn btn-outline-secondary">{% trans "Ver mi perfil" %}</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

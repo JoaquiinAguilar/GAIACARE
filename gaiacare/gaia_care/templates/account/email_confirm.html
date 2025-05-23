@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load account %}
+
+{% block title %}{% trans "Confirmar Correo Electrónico" %} - Gaia Care{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="card border-0 shadow">
+        <div class="card-body p-5">
+          <h1 class="text-center mb-4" style="font-family: 'Libre Bodoni', serif;">{% trans "Confirmar Correo Electrónico" %}</h1>
+          
+          {% if confirmation %}
+            {% user_display confirmation.email_address.user as user_display %}
+            
+            <p class="mb-4 text-center">{% blocktrans with confirmation.email_address.email as email %}Por favor, confirma que <strong>{{ email }}</strong> es la dirección de correo electrónico de {{ user_display }}.{% endblocktrans %}</p>
+            
+            <form method="post" action="{% url 'account_confirm_email' confirmation.key %}">
+              {% csrf_token %}
+              <button class="btn w-100" type="submit" style="background-color: var(--dark-pink); color: white;">{% trans "Confirmar" %}</button>
+            </form>
+          {% else %}
+            {% url 'account_email' as email_url %}
+            
+            <div class="alert alert-warning text-center">
+              <p class="mb-0">{% blocktrans %}Este enlace de confirmación ha expirado o es inválido. Por favor <a href="{{ email_url }}" style="color: var(--dark-pink);">solicita una nueva confirmación de correo electrónico</a>.{% endblocktrans %}</p>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

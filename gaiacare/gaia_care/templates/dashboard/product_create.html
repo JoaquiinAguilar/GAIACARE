@@ -1,0 +1,162 @@
+{% extends "dashboard/base_dashboard.html" %}
+{% load static %}
+
+{% block dashboard_content %}
+<div class="content-header">
+    <h1 class="content-title">Crear Nuevo Producto</h1>
+    <p class="text-muted">Completa el formulario para crear un nuevo producto.</p>
+</div>
+
+<div class="dashboard-card">
+    <form method="post" enctype="multipart/form-data" class="dashboard-form">
+        {% csrf_token %}
+        
+        <div class="row mb-4">
+            <div class="col-md-8">
+                <div class="mb-3">
+                    <label for="name" class="form-label">Nombre del Producto*</label>
+                    <input type="text" class="form-control" id="name" name="name" required>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="category" class="form-label">Categoría*</label>
+                    <select class="form-select" id="category" name="category" required>
+                        <option value="">Seleccionar categoría</option>
+                        {% for category in categories %}
+                            <option value="{{ category.id }}">{{ category.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="description" class="form-label">Descripción*</label>
+                    <textarea class="form-control" id="description" name="description" rows="5" required></textarea>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="price" class="form-label">Precio*</label>
+                        <div class="input-group">
+                            <span class="input-group-text">$</span>
+                            <input type="number" class="form-control" id="price" name="price" step="0.01" min="0" required>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6 mb-3">
+                        <label for="stock" class="form-label">Inventario*</label>
+                        <input type="number" class="form-control" id="stock" name="stock" min="0" required>
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="available" name="available" checked>
+                        <label class="form-check-label" for="available">Disponible para venta</label>
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="featured" name="featured">
+                        <label class="form-check-label" for="featured">Destacar en página principal</label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="mb-3">
+                    <label class="form-label">Imágenes del Producto*</label>
+                    <div class="dropzone" id="imageDropzone">
+                        <input type="file" name="image" id="image" class="d-none" multiple accept="image/*">
+                        <div class="text-center">
+                            <i class="bi bi-cloud-arrow-up" style="font-size: 2rem;"></i>
+                            <p>Arrastra imágenes aquí o <span class="text-primary">haz clic para seleccionar</span></p>
+                            <p class="small text-muted">La primera imagen será la principal</p>
+                        </div>
+                    </div>
+                    
+                    <div class="selected-images mt-3" id="selectedImages"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="text-end">
+            <a href="{% url 'dashboard:product_list' %}" class="btn btn-outline-secondary me-2">Cancelar</a>
+            <button type="submit" class="btn btn-dashboard">Crear Producto</button>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block dashboard_scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Configuración del dropzone para imágenes
+        const dropzone = document.getElementById('imageDropzone');
+        const fileInput = document.getElementById('image');
+        const selectedImagesContainer = document.getElementById('selectedImages');
+        
+        dropzone.addEventListener('click', function() {
+            fileInput.click();
+        });
+        
+        dropzone.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            dropzone.classList.add('border-primary');
+        });
+        
+        dropzone.addEventListener('dragleave', function() {
+            dropzone.classList.remove('border-primary');
+        });
+        
+        dropzone.addEventListener('drop', function(e) {
+            e.preventDefault();
+            dropzone.classList.remove('border-primary');
+            
+            if (e.dataTransfer.files.length) {
+                fileInput.files = e.dataTransfer.files;
+                showSelectedImages(fileInput.files);
+            }
+        });
+        
+        fileInput.addEventListener('change', function() {
+            showSelectedImages(this.files);
+        });
+        
+        function showSelectedImages(files) {
+            selectedImagesContainer.innerHTML = '';
+            
+            if (files.length === 0) return;
+            
+            const imageGallery = document.createElement('div');
+            imageGallery.className = 'image-gallery';
+            
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    const imageItem = document.createElement('div');
+                    imageItem.className = 'image-item';
+                    
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.alt = file.name;
+                    
+                    const indicator = document.createElement('div');
+                    indicator.className = i === 0 ? 'main-image-indicator' : 'd-none';
+                    indicator.textContent = 'Principal';
+                    
+                    imageItem.appendChild(img);
+                    imageItem.appendChild(indicator);
+                    imageGallery.appendChild(imageItem);
+                };
+                
+                reader.readAsDataURL(file);
+            }
+            
+            selectedImagesContainer.appendChild(imageGallery);
+        }
+    });
+</script>
+{% endblock %}

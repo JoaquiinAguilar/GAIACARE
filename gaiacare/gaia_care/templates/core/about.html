@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Sobre Nosotros - Gaia Care{% endblock %}
+
+{% block content %}
+    <div class="container py-5">
+        <h1 class="section-title">Sobre Nosotros</h1>
+        
+        <div class="row align-items-center mb-5">
+            <div class="col-lg-6 mb-4 mb-lg-0">
+                <img src="{% static 'images/teamgaia.jpg' %}" alt="Equipo Gaia Care" class="img-fluid rounded shadow">
+            </div>
+            <div class="col-lg-6">
+                <h2 class="mb-4" style="font-family: 'Libre Bodoni', serif;">Nuestra Historia</h2>
+                <p>Gaia Care nació en Chiapas en 2022, de la mano de emprendedores apasionados por la cosmética natural y la sostenibilidad. Nos inspiramos en la riqueza natural de nuestra región para crear productos que respeten tanto la piel como el medio ambiente.</p>
+                <p>Comenzamos con una pequeña línea de perfumes sólidos que rápidamente capturó la atención de quienes buscaban alternativas naturales y libres de envases plásticos. Hoy, hemos ampliado nuestra gama a diversos productos de cuidado personal, manteniendo siempre nuestro compromiso con la naturaleza y la calidad.</p>
+            </div>
+        </div>
+        
+        <div class="row mb-5">
+            <div class="col-12">
+                <div class="p-5 rounded" style="background-color: var(--light-pink);">
+                    <h2 class="text-center mb-4" style="font-family: 'Libre Bodoni', serif;">Nuestra Filosofía</h2>
+                    <div class="row">
+                        <div class="col-md-4 mb-4 mb-md-0">
+                            <div class="text-center">
+                                <div class="mb-3">
+                                    <i class="bi bi-flower1" style="font-size: 3rem; color: var(--dark-pink);"></i>
+                                </div>
+                                <h4>Ingredientes Naturales</h4>
+                                <p>Utilizamos únicamente ingredientes naturales de la más alta calidad, muchos de ellos provenientes de productores locales en Chiapas.</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-4 mb-md-0">
+                            <div class="text-center">
+                                <div class="mb-3">
+                                    <i class="bi bi-recycle" style="font-size: 3rem; color: var(--dark-pink);"></i>
+                                </div>
+                                <h4>Sostenibilidad</h4>
+                                <p>Todos nuestros envases son 100% compostables o biodegradables, y trabajamos constantemente para reducir nuestra huella ecológica.</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="text-center">
+                                <div class="mb-3">
+                                    <i class="bi bi-heart" style="font-size: 3rem; color: var(--dark-pink);"></i>
+                                </div>
+                                <h4>Ética y Respeto</h4>
+                                <p>Nuestros productos son veganos, libres de crueldad animal, y creados con respeto hacia las personas y comunidades que participan en nuestra cadena de valor.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row mb-5">
+            <div class="col-lg-6 order-lg-2 mb-4 mb-lg-0">
+                <img src="{% static 'images/products-about.jpg' %}" alt="Productos Gaia Care" class="img-fluid rounded shadow">
+            </div>
+            <div class="col-lg-6 order-lg-1">
+                <h2 class="mb-4" style="font-family: 'Libre Bodoni', serif;">Nuestros Productos</h2>
+                <p>En Gaia Care, cada producto es creado artesanalmente en pequeños lotes para asegurar la más alta calidad. Nuestro proceso de formulación combina conocimientos tradicionales con innovación, siempre priorizando ingredientes naturales que beneficien tanto a la piel como al planeta.</p>
+                <p>Una característica única de nuestros perfumes sólidos es que cada envase contiene una semilla en su tapa. Cuando termines de usar tu producto, puedes plantar esta semilla, dándole una nueva vida al envase y contribuyendo a reforestar nuestro planeta.</p>
+                <a href="{% url 'products:product_list' %}" class="btn" style="background-color: var(--dark-pink); color: white;">Descubre Nuestros Productos</a>
+            </div>
+        </div>
+        
+        <div class="row mb-5">
+            <div class="col-12">
+                <h2 class="text-center mb-5" style="font-family: 'Libre Bodoni', serif;">Nuestro Equipo</h2>
+                <div class="row">
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100 border-0 shadow-sm">
+                            <img src="{% static 'images/team-1.jpg' %}" class="card-img-top" alt="Fundadora">
+                            <div class="card-body text-center">
+                                <h5 class="card-title">María Fernández</h5>
+                                <p class="text-muted">Fundadora y Directora Creativa</p>
+                                <p class="card-text">Con una pasión por la botánica y la cosmética natural, María es la visionaria detrás de la filosofía de Gaia Care.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100 border-0 shadow-sm">
+                            <img src="{% static 'images/team-2.jpg' %}" class="card-img-top" alt="Co-fundador">
+                            <div class="card-body text-center">
+                                <h5 class="card-title">Carlos Gutiérrez</h5>
+                                <p class="text-muted">Co-fundador y Director de Sostenibilidad</p>
+                                <p class="card-text">Carlos lidera nuestras iniciativas de sostenibilidad y asegura que cada aspecto de nuestro negocio respete el medio ambiente.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100 border-0 shadow-sm">
+                            <img src="{% static 'images/team-3.jpg' %}" class="card-img-top" alt="Formuladora">
+                            <div class="card-body text-center">
+                                <h5 class="card-title">Ana López</h5>
+                                <p class="text-muted">Formuladora Principal</p>
+                                <p class="card-text">Con experiencia en química y herbología, Ana es la mente creativa detrás de nuestras innovadoras fórmulas.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="text-center">
+            <h2 class="mb-4" style="font-family: 'Libre Bodoni', serif;">Únete a Nuestra Comunidad</h2>
+            <p class="mb-4">Forma parte de nuestra comunidad de personas comprometidas con el cuidado personal sostenible y natural.</p>
+            <a href="{% url 'core:contact' %}" class="btn" style="background-color: var(--dark-pink); color: white;">Contáctanos</a>
+        </div>
+    </div>
+{% endblock %}

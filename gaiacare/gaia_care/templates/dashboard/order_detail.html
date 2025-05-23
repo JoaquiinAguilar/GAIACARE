@@ -1,0 +1,243 @@
+{% extends "dashboard/base_dashboard.html" %}
+{% load static %}
+
+{% block dashboard_content %}
+<div class="content-header d-flex justify-content-between align-items-center">
+    <div>
+        <h1 class="content-title">Pedido #{{ order.id }}</h1>
+        <p class="text-muted">{{ order.created_at|date:"d/m/Y H:i" }}</p>
+    </div>
+    <div>
+        <a href="{% url 'dashboard:order_list' %}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Volver a la lista
+        </a>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Información básica del pedido -->
+    <div class="col-lg-4 mb-4">
+        <div class="dashboard-card h-100">
+            <div class="dashboard-card-title">Información del Cliente</div>
+            
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">
+                    <strong>Cliente:</strong> {{ order.full_name }}
+                </li>
+                <li class="list-group-item">
+                    <strong>Email:</strong> {{ order.email }}
+                </li>
+                <li class="list-group-item">
+                    <strong>Teléfono:</strong> {{ order.phone }}
+                </li>
+                <li class="list-group-item">
+                    <strong>Dirección:</strong><br>
+                    {{ order.address }}<br>
+                    {{ order.city }}, {{ order.state }}<br>
+                    C.P. {{ order.postal_code }}
+                </li>
+                {% if order.notes %}
+                    <li class="list-group-item">
+                        <strong>Notas:</strong><br>
+                        {{ order.notes }}
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+    
+    <!-- Estado del pedido -->
+    <div class="col-lg-4 mb-4">
+        <div class="dashboard-card h-100">
+            <div class="dashboard-card-title">Estado del Pedido</div>
+            
+            <form method="post" class="dashboard-form">
+                {% csrf_token %}
+                
+                <div class="mb-3">
+                    <label for="status" class="form-label">Estado del Pedido</label>
+                    <select class="form-select" id="status" name="status">
+                        <option value="pendiente" {% if order.status == 'pendiente' %}selected{% endif %}>Pendiente</option>
+                        <option value="pagado" {% if order.status == 'pagado' %}selected{% endif %}>Pagado</option>
+                        <option value="enviado" {% if order.status == 'enviado' %}selected{% endif %}>Enviado</option>
+                        <option value="entregado" {% if order.status == 'entregado' %}selected{% endif %}>Entregado</option>
+                        <option value="cancelado" {% if order.status == 'cancelado' %}selected{% endif %}>Cancelado</option>
+                    </select>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="payment_status" class="form-label">Estado del Pago</label>
+                    <select class="form-select" id="payment_status" name="payment_status">
+                        <option value="pendiente" {% if order.payment.status == 'pendiente' %}selected{% endif %}>Pendiente</option>
+                        <option value="procesando" {% if order.payment.status == 'procesando' %}selected{% endif %}>Procesando</option>
+                        <option value="completado" {% if order.payment.status == 'completado' %}selected{% endif %}>Completado</option>
+                        <option value="fallido" {% if order.payment.status == 'fallido' %}selected{% endif %}>Fallido</option>
+                        <option value="reembolsado" {% if order.payment.status == 'reembolsado' %}selected{% endif %}>Reembolsado</option>
+                    </select>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="transaction_id" class="form-label">ID de Transacción</label>
+                    <input type="text" class="form-control" id="transaction_id" name="transaction_id" value="{{ order.payment.transaction_id }}">
+                </div>
+                
+                <div class="mb-3">
+                    <label for="payment_notes" class="form-label">Notas de Pago</label>
+                    <textarea class="form-control" id="payment_notes" name="payment_notes" rows="2">{{ order.payment.notes }}</textarea>
+                </div>
+                
+                <button type="submit" class="btn btn-dashboard w-100">Actualizar Estado</button>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Información de envío -->
+    <div class="col-lg-4 mb-4">
+        <div class="dashboard-card h-100">
+            <div class="dashboard-card-title">Información de Envío</div>
+            
+            <form method="post" class="dashboard-form">
+                {% csrf_token %}
+                
+                <div class="mb-3">
+                    <label for="shipping_status" class="form-label">Estado del Envío</label>
+                    <select class="form-select" id="shipping_status" name="shipping_status">
+                        <option value="pendiente" {% if order.shipping.status == 'pendiente' %}selected{% endif %}>Pendiente</option>
+                        <option value="procesando" {% if order.shipping.status == 'procesando' %}selected{% endif %}>Procesando</option>
+                        <option value="enviado" {% if order.shipping.status == 'enviado' %}selected{% endif %}>Enviado</option>
+                        <option value="entregado" {% if order.shipping.status == 'entregado' %}selected{% endif %}>Entregado</option>
+                        <option value="devuelto" {% if order.shipping.status == 'devuelto' %}selected{% endif %}>Devuelto</option>
+                    </select>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="tracking_number" class="form-label">Número de Seguimiento</label>
+                    <input type="text" class="form-control" id="tracking_number" name="tracking_number" value="{{ order.shipping.tracking_number }}">
+                </div>
+                
+                <div class="mb-3">
+                    <label for="carrier" class="form-label">Transportista</label>
+                    <input type="text" class="form-control" id="carrier" name="carrier" value="{{ order.shipping.carrier }}">
+                </div>
+                
+                <div class="mb-3">
+                    <label for="shipping_notes" class="form-label">Notas de Envío</label>
+                    <textarea class="form-control" id="shipping_notes" name="shipping_notes" rows="2">{{ order.shipping.notes }}</textarea>
+                </div>
+                
+                <div class="mb-3">
+                    {% if order.shipping.shipped_date %}
+                        <p><strong>Fecha de Envío:</strong> {{ order.shipping.shipped_date|date:"d/m/Y H:i" }}</p>
+                    {% endif %}
+                    
+                    {% if order.shipping.delivered_date %}
+                        <p><strong>Fecha de Entrega:</strong> {{ order.shipping.delivered_date|date:"d/m/Y H:i" }}</p>
+                    {% endif %}
+                </div>
+                
+                <button type="submit" class="btn btn-dashboard w-100">Actualizar Envío</button>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Productos del pedido -->
+    <div class="col-lg-8 mb-4">
+        <div class="dashboard-card">
+            <div class="dashboard-card-title">Productos</div>
+            
+            <div class="table-responsive">
+                <table class="table dashboard-table">
+                    <thead>
+                        <tr>
+                            <th>Producto</th>
+                            <th class="text-center">Precio</th>
+                            <th class="text-center">Cantidad</th>
+                            <th class="text-end">Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in order.items.all %}
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div style="width: 50px; height: 50px; overflow: hidden; margin-right: 15px;">
+                                            {% if item.product.get_main_image %}
+                                                <img src="{{ item.product.get_main_image.image.url }}" alt="{{ item.product.name }}" class="img-fluid">
+                                            {% else %}
+                                                <img src="{% static 'images/placeholder.png' %}" alt="{{ item.product.name }}" class="img-fluid">
+                                            {% endif %}
+                                        </div>
+                                        <div>
+                                            <h6 class="mb-0">{{ item.product.name }}</h6>
+                                            <small class="text-muted">{{ item.product.category.name }}</small>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="text-center">${{ item.price }} MXN</td>
+                                <td class="text-center">{{ item.quantity }}</td>
+                                <td class="text-end">${{ item.get_total }} MXN</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="3" class="text-end"><strong>Subtotal:</strong></td>
+                            <td class="text-end">${{ order.subtotal }} MXN</td>
+                        </tr>
+                        <tr>
+                            <td colspan="3" class="text-end"><strong>Envío:</strong></td>
+                            <td class="text-end">${{ order.shipping_cost }} MXN</td>
+                        </tr>
+                        <tr>
+                            <td colspan="3" class="text-end"><strong>Total:</strong></td>
+                            <td class="text-end"><strong>${{ order.total }} MXN</strong></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Resumen financiero -->
+    <div class="col-lg-4 mb-4">
+        <div class="dashboard-card">
+            <div class="dashboard-card-title">Resumen Financiero</div>
+            
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <span>Método de Pago:</span>
+                    <span>{{ order.get_payment_method_display }}</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <span>Estado de Pago:</span>
+                    <span>
+                        {% if order.payment.status == 'pendiente' %}
+                            <span class="status-badge pending">Pendiente</span>
+                        {% elif order.payment.status == 'procesando' %}
+                            <span class="status-badge confirmed">Procesando</span>
+                        {% elif order.payment.status == 'completado' %}
+                            <span class="status-badge delivered">Completado</span>
+                        {% elif order.payment.status == 'fallido' %}
+                            <span class="status-badge cancelled">Fallido</span>
+                        {% elif order.payment.status == 'reembolsado' %}
+                            <span class="status-badge cancelled">Reembolsado</span>
+                        {% endif %}
+                    </span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <span>Fecha de Pago:</span>
+                    <span>{{ order.payment.payment_date|date:"d/m/Y H:i"|default:"No disponible" }}</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <span>Referencia de Pago:</span>
+                    <span>{{ order.payment_reference|default:"No disponible" }}</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <span>Total del Pedido:</span>
+                    <span class="fw-bold">${{ order.total }} MXN</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,98 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+
+{% block title %}{{ title }} | {{ site_title|default:_('Administración Gaia Care') }}{% endblock %}
+
+{% block branding %}
+<h1 id="site-name">
+    <a href="{% url 'admin:index' %}">
+        <img src="{% static 'images/logo.svg' %}" alt="Gaia Care Logo" style="height: 50px; margin-right: 10px;">
+        Administración Gaia Care
+    </a>
+</h1>
+{% endblock %}
+
+{% block extrastyle %}
+{{ block.super }}
+<style>
+    :root {
+        --primary: #e9a2b2;
+        --secondary: #ddcc9f;
+        --link-fg: #e9a2b2;
+        --link-hover-color: #d48a9a;
+        --header-color: #d48a9a;
+        --selected-row: #fde9eb;
+        --button-hover-bg: #d48a9a;
+    }
+
+    #header {
+        background: var(--header-color);
+        color: #fff;
+    }
+    
+    #header a:link, #header a:visited {
+        color: #fff;
+    }
+    
+    div.breadcrumbs {
+        background: var(--primary);
+    }
+    
+    .module h2, .module caption, .inline-group h2 {
+        background: var(--primary);
+    }
+    
+    .button, input[type=submit], input[type=button], .submit-row input, a.button {
+        background: var(--primary);
+    }
+    
+    .button:hover, input[type=submit]:hover, input[type=button]:hover {
+        background: var(--button-hover-bg);
+    }
+    
+    .button.default, input[type=submit].default, .submit-row input.default {
+        background: var(--header-color);
+    }
+    
+    .button.default:hover, input[type=submit].default:hover {
+        background: var(--button-hover-bg);
+    }
+    
+    .object-tools a:link, .object-tools a:visited {
+        background: var(--primary);
+    }
+    
+    .object-tools a:hover {
+        background: var(--button-hover-bg);
+    }
+    
+    a:link, a:visited {
+        color: var(--link-fg);
+    }
+    
+    a:hover {
+        color: var(--link-hover-color);
+    }
+    
+    .selector-chosen h2 {
+        background: var(--primary) !important;
+    }
+    
+    .calendar td.selected a {
+        background: var(--primary) !important;
+    }
+    
+    .calendar td a:hover {
+        background: var(--link-hover-color) !important;
+    }
+</style>
+{% endblock %}
+
+{% block extrahead %}
+{{ block.super }}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/ui/1.13.1/jquery-ui.min.js"></script>
+<script src="{% static 'js/product-admin.js' %}"></script>
+{% endblock %}
+
+{% block nav-global %}{% endblock %}

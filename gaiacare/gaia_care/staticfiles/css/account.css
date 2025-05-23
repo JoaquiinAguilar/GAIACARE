@@ -1,0 +1,163 @@
+/* Estilos adicionales para las páginas de cuenta */
+
+.account-heading {
+    font-family: 'Libre Bodoni', serif;
+    margin-bottom: 1.5rem;
+    color: var(--text-color);
+}
+
+.account-card {
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border: none;
+    overflow: hidden;
+}
+
+.account-card .card-body {
+    padding: 2rem;
+}
+
+.btn-account {
+    background-color: var(--dark-pink);
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.btn-account:hover {
+    background-color: #d48a9a;
+    color: white;
+}
+
+.btn-account-outline {
+    background-color: transparent;
+    color: var(--dark-pink);
+    border: 1px solid var(--dark-pink);
+    padding: 10px 15px;
+    border-radius: 4px;
+    transition: all 0.2s;
+    width: 100%;
+}
+
+.btn-account-outline:hover {
+    background-color: var(--light-pink);
+    color: var(--dark-pink);
+}
+
+.account-link {
+    color: var(--dark-pink);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.account-link:hover {
+    color: #d48a9a;
+    text-decoration: underline;
+}
+
+.account-divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin: 20px 0;
+}
+
+.account-divider::before,
+.account-divider::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid #ddd;
+}
+
+.account-divider span {
+    padding: 0 10px;
+    color: #777;
+}
+
+.socialaccount_providers {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.socialaccount_providers .button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 15px;
+    border-radius: 4px;
+    text-decoration: none;
+    color: white;
+    font-weight: 500;
+    transition: opacity 0.2s;
+}
+
+.socialaccount_providers .button:hover {
+    opacity: 0.9;
+}
+
+.socialaccount_providers .button.google {
+    background-color: #DB4437;
+}
+
+.socialaccount_providers .button.facebook {
+    background-color: #3b5998;
+}
+
+.form-check-input:checked {
+    background-color: var(--dark-pink);
+    border-color: var(--dark-pink);
+}
+
+/* Estilos para errores de formulario */
+.errorlist {
+    color: #dc3545;
+    font-size: 0.875rem;
+    list-style-type: none;
+    padding-left: 0;
+    margin-top: 0.25rem;
+}
+
+/* Estilos para alertas */
+.alert-account {
+    border-radius: 4px;
+    padding: 15px 20px;
+    margin-bottom: 20px;
+    border: none;
+}
+
+.alert-account-success {
+    background-color: #d4edda;
+    color: #155724;
+    border-left: 4px solid #28a745;
+}
+
+.alert-account-danger {
+    background-color: #f8d7da;
+    color: #721c24;
+    border-left: 4px solid #dc3545;
+}
+
+.alert-account-warning {
+    background-color: #fff3cd;
+    color: #856404;
+    border-left: 4px solid #ffc107;
+}
+
+.alert-account-info {
+    background-color: #d1ecf1;
+    color: #0c5460;
+    border-left: 4px solid #17a2b8;
+}
+
+/* Estilos responsive */
+@media (max-width: 768px) {
+    .account-card .card-body {
+        padding: 1.5rem;
+    }
+}

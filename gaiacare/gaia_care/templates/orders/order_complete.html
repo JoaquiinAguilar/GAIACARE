@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %}Pedido Completado - Gaia Care{% endblock %}
+
+{% block content %}
+    <div class="order-complete">
+        <div class="order-complete-icon">
+            ✓
+        </div>
+        <h1 class="order-complete-title">¡Gracias por tu pedido!</h1>
+        <p class="order-complete-message">
+            Tu pedido ha sido recibido y está siendo procesado.<br>
+            Te hemos enviado un correo electrónico con los detalles de tu compra.
+        </p>
+        
+        <div class="order-details">
+            <h3 class="mb-3">Detalles del Pedido</h3>
+            
+            <div class="order-detail-row">
+                <div class="order-detail-label">Número de Pedido:</div>
+                <div class="order-detail-value">#{{ order.id }}</div>
+            </div>
+            
+            <div class="order-detail-row">
+                <div class="order-detail-label">Fecha:</div>
+                <div class="order-detail-value">{{ order.created_at|date:"d/m/Y H:i" }}</div>
+            </div>
+            
+            <div class="order-detail-row">
+                <div class="order-detail-label">Estado:</div>
+                <div class="order-detail-value">{{ order.get_status_display }}</div>
+            </div>
+            
+            <div class="order-detail-row">
+                <div class="order-detail-label">Método de Pago:</div>
+                <div class="order-detail-value">{{ order.get_payment_method_display }}</div>
+            </div>
+            
+            <div class="order-detail-row">
+                <div class="order-detail-label">Subtotal:</div>
+                <div class="order-detail-value">${{ order.subtotal }} MXN</div>
+            </div>
+            
+            <div class="order-detail-row">
+                <div class="order-detail-label">Envío:</div>
+                <div class="order-detail-value">${{ order.shipping_cost }} MXN</div>
+            </div>
+            
+            <div class="order-detail-row">
+                <div class="order-detail-label">Total:</div>
+                <div class="order-detail-value">${{ order.total }} MXN</div>
+            </div>
+        </div>
+        
+        <div class="payment-instructions">
+            <h3 class="mb-3">Instrucciones de Pago</h3>
+            
+            <div class="bank-details">
+                <p>Por favor, realiza una transferencia bancaria con los siguientes datos:</p>
+                
+                <div class="bank-detail-row">
+                    <div class="bank-detail-label">Banco:</div>
+                    <div class="bank-detail-value">{{ bank_details.bank_name }}</div>
+                </div>
+                
+                <div class="bank-detail-row">
+                    <div class="bank-detail-label">Beneficiario:</div>
+                    <div class="bank-detail-value">{{ bank_details.account_name }}</div>
+                </div>
+                
+                <div class="bank-detail-row">
+                    <div class="bank-detail-label">Número de Cuenta:</div>
+                    <div class="bank-detail-value">{{ bank_details.account_number }}</div>
+                </div>
+                
+                <div class="bank-detail-row">
+                    <div class="bank-detail-label">CLABE:</div>
+                    <div class="bank-detail-value">{{ bank_details.clabe }}</div>
+                </div>
+                
+                <!-- Instrucciones adicionales de la configuración -->
+                {% if payment_instructions %}
+                    <div class="mt-3">
+                        {{ payment_instructions|linebreaks }}
+                    </div>
+                {% else %}
+                    <div class="mt-3 alert alert-warning">
+                        <strong>Importante:</strong> Al realizar tu transferencia, por favor incluye tu número de pedido (#{{ order.id }}) como referencia.
+                    </div>
+                {% endif %}
+            </div>
+                
+            <div class="reference-form">
+                <form method="post" action="{% url 'orders:payment_reference' order.id %}">
+                    {% csrf_token %}
+                    {{ payment_form|crispy }}
+                    <button type="submit" class="btn w-100" style="background-color: var(--dark-pink); color: white;">Enviar Referencia de Pago</button>
+                </form>
+            </div>
+        </div>
+        
+        <div class="mt-5">
+            <a href="{% url 'orders:order_list' %}" class="btn" style="background-color: var(--dark-pink); color: white;">Ver Mis Pedidos</a>
+            <a href="{% url 'products:product_list' %}" class="btn btn-outline-secondary ms-2">Continuar Comprando</a>
+        </div>
+    </div>
+{% endblock %}

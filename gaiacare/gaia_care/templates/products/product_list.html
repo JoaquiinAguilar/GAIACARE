@@ -1,0 +1,151 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block title %}
+    {% if current_category %}
+        {{ current_category.name }} - Gaia Care
+    {% else %}
+        Productos - Gaia Care
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    <div class="container py-5">
+        <h1 class="section-title">
+            {% if current_category %}
+                {{ current_category.name }}
+            {% else %}
+                Nuestros Productos
+            {% endif %}
+        </h1>
+        
+        {% if current_category %}
+            <div class="category-description text-center mb-4">
+                {{ current_category.description }}
+            </div>
+        {% endif %}
+        
+        <div class="row">
+            <!-- Filtros -->
+            <div class="col-lg-3">
+                <div class="card mb-4">
+                    <div class="card-header" style="background-color: var(--medium-pink);">
+                        <h5 class="mb-0">Filtros</h5>
+                    </div>
+                    <div class="card-body">
+                        <form method="get" action=".">
+                            <div class="mb-3">
+                                <label for="id_name" class="form-label">Buscar por nombre</label>
+                                {% render_field filter.form.name class="form-control" placeholder="Nombre del producto" %}
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="id_category" class="form-label">Categoría</label>
+                                {% render_field filter.form.category class="form-select" %}
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="id_min_price" class="form-label">Precio mínimo</label>
+                                {% render_field filter.form.min_price class="form-control" placeholder="$" %}
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="id_max_price" class="form-label">Precio máximo</label>
+                                {% render_field filter.form.max_price class="form-control" placeholder="$" %}
+                            </div>
+                            
+                            <button type="submit" class="btn" style="background-color: var(--dark-pink); color: white;">Aplicar filtros</button>
+                            <a href="{% url 'products:product_list' %}" class="btn btn-outline-secondary">Limpiar</a>
+                        </form>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header" style="background-color: var(--medium-pink);">
+                        <h5 class="mb-0">Categorías</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item {% if not current_category %}active{% endif %}" style="{% if not current_category %}background-color: var(--dark-pink); color: white;{% endif %}">
+                                <a href="{% url 'products:product_list' %}" class="text-decoration-none {% if not current_category %}text-white{% endif %}">Todos los productos</a>
+                            </li>
+                            {% for category in categories %}
+                                <li class="list-group-item {% if current_category.id == category.id %}active{% endif %}" style="{% if current_category.id == category.id %}background-color: var(--dark-pink); color: white;{% endif %}">
+                                    <a href="{% url 'products:category_products' category.slug %}" class="text-decoration-none {% if current_category.id == category.id %}text-white{% endif %}">{{ category.name }}</a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Listado de productos -->
+            <div class="col-lg-9">
+                <div class="row">
+                    {% for product in products %}
+                        <div class="col-md-4 mb-4">
+                            <div class="product-card">
+                                <div class="product-image">
+                                    {% if product.get_main_image %}
+                                        <img src="{{ product.get_main_image.image.url }}" alt="{{ product.get_main_image.alt_text|default:product.name }}">
+                                    {% else %}
+                                        <img src="{% static 'images/placeholder.png' %}" alt="{{ product.name }}">
+                                    {% endif %}
+                                </div>
+                                <div class="product-info">
+                                    <div class="product-name">{{ product.name }}</div>
+                                    <div class="product-price">${{ product.price }} MXN</div>
+                                    <div class="product-description">{{ product.description|truncatewords:15 }}</div>
+                                    <a href="{% url 'products:product_detail' product.slug %}" class="btn btn-sm mb-2 w-100" style="background-color: var(--accent-brown); color: var(--text-color);">Ver detalles</a>
+                                    
+                                    <form method="post" action="{% url 'carts:add_to_cart' %}" class="add-to-cart-form">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="product_id" value="{{ product.id }}">
+                                        <input type="hidden" name="quantity" value="1">
+                                        <button type="submit" class="add-to-cart">Agregar al Carrito</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    {% empty %}
+                        <div class="col-12">
+                            <div class="alert alert-info text-center">
+                                No se encontraron productos que coincidan con los criterios de búsqueda.
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+                
+                <!-- Paginación -->
+                {% if is_paginated %}
+                    <nav class="mt-4">
+                        <ul class="pagination justify-content-center">
+                            {% if page_obj.has_previous %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page=1{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">&laquo; Primera</a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">Anterior</a>
+                                </li>
+                            {% endif %}
+                            
+                            <li class="page-item active">
+                                <span class="page-link">Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</span>
+                            </li>
+                            
+                            {% if page_obj.has_next %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ page_obj.next_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">Siguiente</a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">Última &raquo;</a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

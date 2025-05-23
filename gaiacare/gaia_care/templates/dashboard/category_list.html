@@ -1,0 +1,104 @@
+{% extends "dashboard/base_dashboard.html" %}
+{% load static %}
+
+{% block dashboard_content %}
+<div class="content-header">
+    <h1 class="content-title">Categorías</h1>
+    <p class="text-muted">Gestiona las categorías de productos.</p>
+</div>
+
+<div class="row">
+    <!-- Lista de categorías -->
+    <div class="col-lg-8">
+        <div class="dashboard-card">
+            <div class="dashboard-card-title">Categorías Existentes</div>
+            
+            {% if categories %}
+                <div class="table-responsive">
+                    <table class="table dashboard-table">
+                        <thead>
+                            <tr>
+                                <th>Imagen</th>
+                                <th>Nombre</th>
+                                <th>Productos</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for category in categories %}
+                                <tr>
+                                    <td>
+                                        {% if category.image %}
+                                            <img src="{{ category.image.url }}" alt="{{ category.name }}" class="table-img">
+                                        {% else %}
+                                            <img src="{% static 'images/category-placeholder.png' %}" alt="{{ category.name }}" class="table-img">
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ category.name }}</td>
+                                    <td>{{ category.product_count }}</td>
+                                    <td>
+                                        {% if category.is_active %}
+                                            <span class="status-badge delivered">Activa</span>
+                                        {% else %}
+                                            <span class="status-badge cancelled">Inactiva</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <a href="{% url 'dashboard:category_detail' category.id %}" class="btn btn-sm btn-dashboard mb-1">
+                                            <i class="bi bi-pencil"></i> Editar
+                                        </a>
+                                        <a href="{% url 'products:category_products' category.slug %}" class="btn btn-sm btn-dashboard-outline" target="_blank">
+                                            <i class="bi bi-eye"></i> Ver
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="text-center py-5">
+                    <i class="bi bi-grid" style="font-size: 3rem; color: #ddd;"></i>
+                    <p class="mt-3">No hay categorías disponibles.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    
+    <!-- Formulario para nueva categoría -->
+    <div class="col-lg-4">
+        <div class="dashboard-card">
+            <div class="dashboard-card-title">Nueva Categoría</div>
+            
+            <form method="post" enctype="multipart/form-data" class="dashboard-form">
+                {% csrf_token %}
+                
+                <div class="mb-3">
+                    <label for="name" class="form-label">Nombre*</label>
+                    <input type="text" class="form-control" id="name" name="name" required>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="description" class="form-label">Descripción</label>
+                    <textarea class="form-control" id="description" name="description" rows="3"></textarea>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="image" class="form-label">Imagen</label>
+                    <input type="file" class="form-control" id="image" name="image" accept="image/*">
+                </div>
+                
+                <div class="mb-3">
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="is_active" name="is_active" checked>
+                        <label class="form-check-label" for="is_active">Categoría activa</label>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn btn-dashboard w-100">Crear Categoría</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

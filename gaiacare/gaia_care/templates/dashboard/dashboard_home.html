@@ -1,0 +1,206 @@
+{% extends "dashboard/base_dashboard.html" %}
+{% load static %}
+
+{% block dashboard_content %}
+<div class="content-header">
+    <h1 class="content-title">Panel de Control</h1>
+    <p class="text-muted">Bienvenido/a, {{ request.user.get_full_name|default:request.user.username }}. Aquí tienes un resumen de tu tienda.</p>
+</div>
+
+<!-- Resumen de estadísticas -->
+<div class="row">
+    <div class="col-md-6 col-lg-3 mb-4">
+        <div class="dashboard-card">
+            <div class="summary-card primary">
+                <div class="dashboard-stat">{{ total_products }}</div>
+                <div class="dashboard-stat-label">Productos</div>
+            </div>
+            <div class="text-end mt-3">
+                <a href="{% url 'dashboard:product_list' %}" class="btn btn-sm btn-dashboard-outline">Ver todos</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6 col-lg-3 mb-4">
+        <div class="dashboard-card">
+            <div class="summary-card success">
+                <div class="dashboard-stat">{{ total_orders }}</div>
+                <div class="dashboard-stat-label">Pedidos</div>
+            </div>
+            <div class="text-end mt-3">
+                <a href="{% url 'dashboard:order_list' %}" class="btn btn-sm btn-dashboard-outline">Ver todos</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6 col-lg-3 mb-4">
+        <div class="dashboard-card">
+            <div class="summary-card warning">
+                <div class="dashboard-stat">${{ total_sales }}</div>
+                <div class="dashboard-stat-label">Ventas Totales</div>
+            </div>
+            <div class="text-end mt-3">
+                <a href="{% url 'dashboard:order_list' %}?status=pagado" class="btn btn-sm btn-dashboard-outline">Ver ventas</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6 col-lg-3 mb-4">
+        <div class="dashboard-card">
+            <div class="summary-card info">
+                <div class="dashboard-stat">{{ total_users }}</div>
+                <div class="dashboard-stat-label">Usuarios</div>
+            </div>
+            <div class="text-end mt-3">
+                <a href="{% url 'dashboard:user_list' %}" class="btn btn-sm btn-dashboard-outline">Ver todos</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Gráfico de Ventas -->
+<div class="row">
+    <div class="col-lg-8 mb-4">
+        <div class="dashboard-card">
+            <div class="dashboard-card-title">Ventas de los últimos 7 días</div>
+            <div style="height: 300px;">
+                <canvas id="salesChart"></canvas>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-4 mb-4">
+        <div class="dashboard-card">
+            <div class="dashboard-card-title">Top Productos Vendidos</div>
+            
+            {% if top_products %}
+                <ul class="list-group list-group-flush">
+                    {% for product in top_products %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span>{{ product.product__name }}</span>
+                            <span class="badge bg-primary rounded-pill">{{ product.units_sold }} vendidos</span>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p class="text-muted">No hay datos de ventas disponibles.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Pedidos Recientes -->
+<div class="row">
+    <div class="col-12 mb-4">
+        <div class="dashboard-card">
+            <div class="dashboard-card-title">Pedidos Recientes</div>
+            
+            {% if recent_orders %}
+                <div class="table-responsive">
+                    <table class="table dashboard-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Cliente</th>
+                                <th>Fecha</th>
+                                <th>Total</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for order in recent_orders %}
+                                <tr>
+                                    <td>#{{ order.id }}</td>
+                                    <td>{{ order.full_name }}</td>
+                                    <td>{{ order.created_at|date:"d/m/Y H:i" }}</td>
+                                    <td>${{ order.total }} MXN</td>
+                                    <td>
+                                        {% if order.status == 'pendiente' %}
+                                            <span class="status-badge pending">Pendiente</span>
+                                        {% elif order.status == 'pagado' %}
+                                            <span class="status-badge confirmed">Pagado</span>
+                                        {% elif order.status == 'enviado' %}
+                                            <span class="status-badge shipped">Enviado</span>
+                                        {% elif order.status == 'entregado' %}
+                                            <span class="status-badge delivered">Entregado</span>
+                                        {% elif order.status == 'cancelado' %}
+                                            <span class="status-badge cancelled">Cancelado</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <a href="{% url 'dashboard:order_detail' order.id %}" class="btn btn-sm btn-dashboard">Ver</a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="text-end mt-3">
+                    <a href="{% url 'dashboard:order_list' %}" class="btn btn-dashboard-outline">Ver todos los pedidos</a>
+                </div>
+            {% else %}
+                <p class="text-muted">No hay pedidos recientes.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Acciones Rápidas -->
+<div class="row">
+    <div class="col-12 mb-4">
+        <div class="dashboard-card">
+            <div class="dashboard-card-title">Acciones Rápidas</div>
+            
+            <div class="row">
+                <div class="col-md-4">
+                    <a href="{% url 'dashboard:product_create' %}" class="btn btn-dashboard w-100 mb-3">
+                        <i class="bi bi-plus-circle"></i> Nuevo Producto
+                    </a>
+                </div>
+                <div class="col-md-4">
+                    <a href="{% url 'dashboard:category_list' %}" class="btn btn-dashboard w-100 mb-3">
+                        <i class="bi bi-folder-plus"></i> Nueva Categoría
+                    </a>
+                </div>
+                <div class="col-md-4">
+                    <a href="{% url 'admin:index' %}" class="btn btn-dashboard w-100 mb-3">
+                        <i class="bi bi-gear-fill"></i> Panel de Django
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block dashboard_scripts %}
+<script>
+    // Gráfico de ventas
+    const salesCtx = document.getElementById('salesChart').getContext('2d');
+    
+    const salesChart = new Chart(salesCtx, {
+        type: 'bar',
+        data: {
+            labels: {{ chart_labels|safe }},
+            datasets: [{
+                label: 'Ventas (MXN)',
+                data: {{ chart_data|safe }},
+                backgroundColor: 'rgba(233, 162, 178, 0.7)',
+                borderColor: 'rgb(233, 162, 178)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}

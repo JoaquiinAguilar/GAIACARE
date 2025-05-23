@@ -1,0 +1,259 @@
+{% extends "dashboard/base_dashboard.html" %}
+{% load static %}
+
+{% block dashboard_content %}
+<div class="content-header d-flex justify-content-between align-items-center">
+    <div>
+        <h1 class="content-title">Editar Producto</h1>
+        <p class="text-muted">ID: {{ product.id }}</p>
+    </div>
+    <div>
+        <a href="{% url 'products:product_detail' product.slug %}" class="btn btn-dashboard-outline me-2" target="_blank">
+            <i class="bi bi-eye"></i> Ver en tienda
+        </a>
+        <a href="{% url 'dashboard:product_list' %}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Volver a la lista
+        </a>
+    </div>
+</div>
+
+<div class="dashboard-card">
+    <form method="post" enctype="multipart/form-data" class="dashboard-form">
+        {% csrf_token %}
+        
+        <div class="row mb-4">
+            <div class="col-md-8">
+                <div class="mb-3">
+                    <label for="name" class="form-label">Nombre del Producto*</label>
+                    <input type="text" class="form-control" id="name" name="name" value="{{ product.name }}" required>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="category" class="form-label">Categoría*</label>
+                    <select class="form-select" id="category" name="category" required>
+                        {% for category in categories %}
+                            <option value="{{ category.id }}" {% if product.category.id == category.id %}selected{% endif %}>{{ category.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="description" class="form-label">Descripción*</label>
+                    <textarea class="form-control" id="description" name="description" rows="5" required>{{ product.description }}</textarea>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="price" class="form-label">Precio*</label>
+                        <div class="input-group">
+                            <span class="input-group-text">$</span>
+                            <input type="number" class="form-control" id="price" name="price" step="0.01" min="0" value="{{ product.price }}" required>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6 mb-3">
+                        <label for="stock" class="form-label">Inventario*</label>
+                        <input type="number" class="form-control" id="stock" name="stock" min="0" value="{{ product.stock }}" required>
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="available" name="available" {% if product.available %}checked{% endif %}>
+                        <label class="form-check-label" for="available">Disponible para venta</label>
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="featured" name="featured" {% if product.featured %}checked{% endif %}>
+                        <label class="form-check-label" for="featured">Destacar en página principal</label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="mb-3">
+                    <label class="form-label">Imágenes del Producto</label>
+                    
+                    <!-- Imágenes actuales -->
+                    <div class="image-gallery mb-3">
+                        {% for image in product.images.all %}
+                            <div class="image-item">
+                                <img src="{{ image.image.url }}" alt="{{ product.name }}">
+                                {% if image.is_main %}
+                                    <div class="main-image-indicator">Principal</div>
+                                {% endif %}
+                                <div class="image-actions">
+                                    {% if not image.is_main %}
+                                        <button type="button" class="btn btn-sm btn-primary make-main-btn" data-image-id="{{ image.id }}">
+                                            <i class="bi bi-star"></i>
+                                        </button>
+                                    {% endif %}
+                                    <button type="button" class="btn btn-sm btn-danger delete-image-btn" data-image-id="{{ image.id }}">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    
+                    <!-- Subir nuevas imágenes -->
+                    <div class="dropzone" id="imageDropzone">
+                        <input type="file" name="image" id="image" class="d-none" multiple accept="image/*">
+                        <div class="text-center">
+                            <i class="bi bi-cloud-arrow-up" style="font-size: 2rem;"></i>
+                            <p>Arrastra imágenes aquí o <span class="text-primary">haz clic para seleccionar</span></p>
+                        </div>
+                    </div>
+                    
+                    <div class="selected-images mt-3" id="selectedImages"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="text-end">
+            <a href="{% url 'dashboard:product_list' %}" class="btn btn-outline-secondary me-2">Cancelar</a>
+            <button type="submit" class="btn btn-dashboard">Guardar Cambios</button>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block dashboard_scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Configuración del dropzone para imágenes
+        const dropzone = document.getElementById('imageDropzone');
+        const fileInput = document.getElementById('image');
+        const selectedImagesContainer = document.getElementById('selectedImages');
+        
+        dropzone.addEventListener('click', function() {
+            fileInput.click();
+        });
+        
+        dropzone.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            dropzone.classList.add('border-primary');
+        });
+        
+        dropzone.addEventListener('dragleave', function() {
+            dropzone.classList.remove('border-primary');
+        });
+        
+        dropzone.addEventListener('drop', function(e) {
+            e.preventDefault();
+            dropzone.classList.remove('border-primary');
+            
+            if (e.dataTransfer.files.length) {
+                fileInput.files = e.dataTransfer.files;
+                showSelectedImages(fileInput.files);
+            }
+        });
+        
+        fileInput.addEventListener('change', function() {
+            showSelectedImages(this.files);
+        });
+        
+        function showSelectedImages(files) {
+            selectedImagesContainer.innerHTML = '';
+            
+            if (files.length === 0) return;
+            
+            const imageGallery = document.createElement('div');
+            imageGallery.className = 'image-gallery';
+            
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    const imageItem = document.createElement('div');
+                    imageItem.className = 'image-item';
+                    
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.alt = file.name;
+                    
+                    imageItem.appendChild(img);
+                    imageGallery.appendChild(imageItem);
+                };
+                
+                reader.readAsDataURL(file);
+            }
+            
+            selectedImagesContainer.appendChild(imageGallery);
+        }
+        
+        // Hacer que una imagen sea la principal
+        const makeMainBtns = document.querySelectorAll('.make-main-btn');
+        makeMainBtns.forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const imageId = this.getAttribute('data-image-id');
+                const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+                
+                fetch(`/panel/productos/imagen/${imageId}/actualizar/`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': csrfToken,
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `action=make_main&csrfmiddlewaretoken=${csrfToken}`
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Actualizar la interfaz
+                        location.reload();
+                    } else {
+                        alert('Error: ' + data.error);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Ha ocurrido un error.');
+                });
+            });
+        });
+        
+        // Eliminar una imagen
+        const deleteImageBtns = document.querySelectorAll('.delete-image-btn');
+        deleteImageBtns.forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                if (!confirm('¿Estás seguro de que deseas eliminar esta imagen?')) {
+                    return;
+                }
+                
+                const imageId = this.getAttribute('data-image-id');
+                const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+                
+                fetch(`/panel/productos/imagen/${imageId}/actualizar/`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': csrfToken,
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `action=delete&csrfmiddlewaretoken=${csrfToken}`
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Actualizar la interfaz
+                        location.reload();
+                    } else {
+                        alert('Error: ' + data.error);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Ha ocurrido un error.');
+                });
+            });
+        });
+    });
+</script>
+{% endblock %}

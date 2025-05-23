@@ -1,0 +1,138 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ product.name }} - Gaia Care{% endblock %}
+
+{% block content %}
+    <div class="container py-5">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'core:home' %}">Inicio</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'products:product_list' %}">Productos</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'products:category_products' product.category.slug %}">{{ product.category.name }}</a></li>
+                <li class="breadcrumb-item active" aria-current="page">{{ product.name }}</li>
+            </ol>
+        </nav>
+        
+        <div class="product-detail">
+            <div class="product-detail-images">
+                <div class="main-image">
+                    {% if product.get_main_image %}
+                        <img src="{{ product.get_main_image.image.url }}" alt="{{ product.get_main_image.alt_text|default:product.name }}">
+                    {% else %}
+                        <img src="{% static 'images/placeholder.png' %}" alt="{{ product.name }}">
+                    {% endif %}
+                </div>
+                
+                <div class="image-thumbnails">
+                    {% for image in product.images.all %}
+                        <div class="thumbnail {% if image.is_main %}active{% endif %}">
+                            <img src="{{ image.image.url }}" alt="{{ image.alt_text|default:product.name }}">
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <div class="product-detail-info">
+                <h1 class="product-detail-name">{{ product.name }}</h1>
+                <div class="product-detail-price">${{ product.price }} MXN</div>
+                
+                <div class="product-detail-description">
+                    {{ product.description|linebreaks }}
+                </div>
+                
+                <!-- Atributos del producto -->
+                {% if product.attribute_values.exists %}
+                    <div class="product-attributes mb-4">
+                        <h4>Características</h4>
+                        <ul class="list-unstyled">
+                            {% for attr_value in product.attribute_values.all %}
+                                <li><strong>{{ attr_value.attribute.name }}:</strong> {{ attr_value.value }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+                
+                <!-- Formulario para agregar al carrito -->
+                <form method="post" action="{% url 'carts:add_to_cart' %}" class="add-to-cart-form">
+                    {% csrf_token %}
+                    <input type="hidden" name="product_id" value="{{ product.id }}">
+                    
+                    <div class="quantity-selector">
+                        <label for="quantity">Cantidad:</label>
+                        <div class="quantity-input">
+                            <button type="button" class="quantity-btn minus">-</button>
+                            <input type="number" name="quantity" id="quantity" value="1" min="1" max="{{ product.stock }}">
+                            <button type="button" class="quantity-btn plus">+</button>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="add-to-cart-large" {% if not product.available or product.stock <= 0 %}disabled{% endif %}>
+                        {% if product.available and product.stock > 0 %}
+                            Agregar al Carrito
+                        {% else %}
+                            Agotado
+                        {% endif %}
+                    </button>
+                </form>
+                
+                <!-- Stock -->
+                <div class="stock-info mt-3">
+                    {% if product.stock > 0 %}
+                        <span class="badge bg-success">En stock ({{ product.stock }} disponibles)</span>
+                    {% else %}
+                        <span class="badge bg-danger">Agotado</span>
+                    {% endif %}
+                </div>
+                
+                <!-- Información de envío -->
+                <div class="shipping-info mt-4">
+                    <h4>Información de envío</h4>
+                    <ul class="list-unstyled">
+                        <li><i class="bi bi-truck"></i> Envío a todo México</li>
+                        <li><i class="bi bi-box-seam"></i> Empaque compostable y ecológico</li>
+                        <li><i class="bi bi-shield-check"></i> Garantía de satisfacción</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Productos relacionados -->
+        {% if related_products %}
+            <h2 class="section-title mt-5">También te puede interesar</h2>
+            
+            <div class="products">
+                {% for related_product in related_products %}
+                    <div class="product-card">
+                        <div class="product-image">
+                            {% if related_product.get_main_image %}
+                                <img src="{{ related_product.get_main_image.image.url }}" alt="{{ related_product.get_main_image.alt_text|default:related_product.name }}">
+                            {% else %}
+                                <img src="{% static 'images/placeholder.png' %}" alt="{{ related_product.name }}">
+                            {% endif %}
+                        </div>
+                        <div class="product-info">
+                            <div class="product-name">{{ related_product.name }}</div>
+                            <div class="product-price">${{ related_product.price }} MXN</div>
+                            <div class="product-description">{{ related_product.description|truncatewords:15 }}</div>
+                            <a href="{% url 'products:product_detail' related_product.slug %}" class="btn btn-sm mb-2 w-100" style="background-color: var(--accent-brown); color: var(--text-color);">Ver detalles</a>
+                            
+                            <form method="post" action="{% url 'carts:add_to_cart' %}" class="add-to-cart-form">
+                                {% csrf_token %}
+                                <input type="hidden" name="product_id" value="{{ related_product.id }}">
+                                <input type="hidden" name="quantity" value="1">
+                                <button type="submit" class="add-to-cart" {% if not related_product.available or related_product.stock <= 0 %}disabled{% endif %}>
+                                    {% if related_product.available and related_product.stock > 0 %}
+                                        Agregar al Carrito
+                                    {% else %}
+                                        Agotado
+                                    {% endif %}
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

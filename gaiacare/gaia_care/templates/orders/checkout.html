@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %}Finalizar Compra - Gaia Care{% endblock %}
+
+{% block content %}
+    <div class="checkout-container">
+        <div class="checkout-form">
+            <h1 class="form-title">Finalizar Compra</h1>
+            
+            <form method="post" action="{% url 'orders:checkout' %}">
+                {% csrf_token %}
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <h4 class="mb-3">Información Personal</h4>
+                        <div class="form-group mb-3">
+                            {{ form.full_name|as_crispy_field }}
+                        </div>
+                        <div class="form-group mb-3">
+                            {{ form.email|as_crispy_field }}
+                        </div>
+                        <div class="form-group mb-3">
+                            {{ form.phone|as_crispy_field }}
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <h4 class="mb-3">Dirección de Envío</h4>
+                        <div class="form-group mb-3">
+                            {{ form.address|as_crispy_field }}
+                        </div>
+                        <div class="form-group mb-3">
+                            {{ form.city|as_crispy_field }}
+                        </div>
+                        <div class="form-group mb-3">
+                            {{ form.state|as_crispy_field }}
+                        </div>
+                        <div class="form-group mb-3">
+                            {{ form.postal_code|as_crispy_field }}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="payment-methods mt-4">
+                    <h4 class="mb-3">Método de Pago</h4>
+                    <div class="form-group mb-3">
+                        {{ form.payment_method|as_crispy_field }}
+                    </div>
+                </div>
+                
+                <div class="notes mt-4">
+                    <h4 class="mb-3">Notas Adicionales</h4>
+                    <div class="form-group mb-3">
+                        {{ form.notes|as_crispy_field }}
+                    </div>
+                </div>
+                
+                <button type="submit" class="place-order-btn">Realizar Pedido</button>
+            </form>
+        </div>
+        
+        <div class="checkout-summary">
+            <h3 class="form-title">Resumen del Pedido</h3>
+            
+            <div class="checkout-products">
+                {% for item in cart.items.all %}
+                    <div class="checkout-product">
+                        <div class="checkout-product-image">
+                            {% if item.product.get_main_image %}
+                                <img src="{{ item.product.get_main_image.image.url }}" alt="{{ item.product.name }}">
+                            {% else %}
+                                <img src="{% static 'images/placeholder.png' %}" alt="{{ item.product.name }}">
+                            {% endif %}
+                        </div>
+                        <div class="checkout-product-info">
+                            <div class="checkout-product-name">{{ item.product.name }}</div>
+                            <div class="checkout-product-price">${{ item.product.price }} MXN</div>
+                            <div class="checkout-product-quantity">Cantidad: {{ item.quantity }}</div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            
+            <div class="checkout-totals mt-4">
+                <div class="d-flex justify-content-between mb-2">
+                    <span>Subtotal:</span>
+                    <span>${{ subtotal }} MXN</span>
+                </div>
+                <div class="d-flex justify-content-between mb-2">
+                    <span>Envío:</span>
+                    <span>${{ shipping_cost }} MXN</span>
+                </div>
+                <div class="d-flex justify-content-between fw-bold fs-5 mt-3 pt-3 border-top">
+                    <span>Total:</span>
+                    <span>${{ total }} MXN</span>
+                </div>
+            </div>
+            
+            <div class="mt-4">
+                <div class="alert alert-info">
+                    <p class="mb-0"><strong>Importante:</strong> Una vez realizado el pedido, se te proporcionarán los datos bancarios para realizar el pago.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

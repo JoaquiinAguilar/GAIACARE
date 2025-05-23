@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+    <!-- Hero Section -->
+    <section class="hero">
+        <h1>Belleza en armonía con la naturaleza</h1>
+        <p>Descubre nuestra línea de perfumes sólidos y productos de cuidado personal, creados con ingredientes naturales y envases completamente compostables.</p>
+        <a href="{% url 'products:product_list' %}" class="btn">Comprar Ahora</a>
+    </section>
+    
+    <!-- Featured Products -->
+    <h2 class="section-title">Nuestros Productos Destacados</h2>
+    
+    <div class="products">
+        {% for product in featured_products %}
+            <div class="product-card">
+                <div class="product-image">
+                    {% if product.get_main_image %}
+                        <img src="{{ product.get_main_image.image.url }}" alt="{{ product.get_main_image.alt_text|default:product.name }}">
+                    {% else %}
+                        <img src="{% static 'images/placeholder.png' %}" alt="{{ product.name }}">
+                    {% endif %}
+                </div>
+                <div class="product-info">
+                    <div class="product-name">{{ product.name }}</div>
+                    <div class="product-price">${{ product.price }} MXN</div>
+                    <div class="product-description">{{ product.description|truncatewords:20 }}</div>
+                    
+                    <form method="post" action="{% url 'carts:add_to_cart' %}" class="add-to-cart-form">
+                        {% csrf_token %}
+                        <input type="hidden" name="product_id" value="{{ product.id }}">
+                        <input type="hidden" name="quantity" value="1">
+                        <button type="submit" class="add-to-cart">Agregar al Carrito</button>
+                    </form>
+                </div>
+            </div>
+        {% empty %}
+            <div class="no-products">
+                <p>No hay productos destacados en este momento.</p>
+            </div>
+        {% endfor %}
+    </div>
+    
+    <!-- Categories -->
+    <h2 class="section-title">Explora Nuestras Categorías</h2>
+    
+    <div class="categories">
+        {% for category in categories %}
+            <div class="category-card">
+                {% if category.image %}
+                    <img src="{{ category.image.url }}" alt="{{ category.name }}" class="category-image">
+                {% else %}
+                    <img src="{% static 'images/category-placeholder.png' %}" alt="{{ category.name }}" class="category-image">
+                {% endif %}
+                <div class="category-overlay">
+                    <div class="category-name">{{ category.name }}</div>
+                    <a href="{% url 'products:category_products' category.slug %}" class="stretched-link"></a>
+                </div>
+            </div>
+        {% empty %}
+            <div class="no-categories">
+                <p>No hay categorías disponibles en este momento.</p>
+            </div>
+        {% endfor %}
+    </div>
+    
+    <!-- About Section -->
+    <section class="about">
+        <div class="about-content">
+            <h2>Nuestra Filosofía</h2>
+            <p>En Gaia Care creemos que la verdadera belleza debe estar en armonía con la salud y el medio ambiente. Todos nuestros productos están formulados con ingredientes naturales de la más alta calidad, libres de químicos dañinos.</p>
+            <p>Además, nos comprometemos con la sostenibilidad a través de envases 100% compostables. En la tapa de cada perfume sólido encontrarás una semilla que podrás plantar una vez que hayas terminado tu producto, dando así una nueva vida al finalizar su uso.</p>
+            <a href="{% url 'core:about' %}" class="btn">Conoce Más</a>
+        </div>
+        
+        <div class="about-image">
+            <img src="{% static 'images/about-image.jpg' %}" alt="Filosofía Gaia Care">
+        </div>
+    </section>
+{% endblock %}
