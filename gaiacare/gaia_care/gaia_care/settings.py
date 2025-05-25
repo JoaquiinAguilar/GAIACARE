@@ -3,13 +3,15 @@ from pathlib import Path
 import environ
 
 # Inicializar environ
-env = environ.Env()
-environ.Env.read_env()
+env = environ.Env(
+    DEBUG=(bool, False)
+)
+environ.Env.read_env()  # lee el archivo .env
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Quick-start development settings - unsuitable for production
+# SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = env('SECRET_KEY', default='django-insecure-@sdf3%@#sd*f3sdf34%$sdf*$#sdf#$%')
 
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -26,8 +28,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sites',
-    
-    # Aplicaciones de terceros
+
+    # Terceros
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
@@ -35,8 +37,8 @@ INSTALLED_APPS = [
     'crispy_bootstrap5',
     'widget_tweaks',
     'django_filters',
-    
-    # Aplicaciones propias
+
+    # Apps propias
     'core',
     'products',
     'orders',
@@ -47,7 +49,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # whitenoise para estáticos
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -67,10 +69,10 @@ TEMPLATES = [
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',
-                'django.template.context_processors.request',
+                'django.template.context_processors.request',  # requerido por allauth
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'carts.context_processors.cart_items_count',  # Para mostrar contador del carrito
+                'carts.context_processors.cart_items_count',
             ],
         },
     },
@@ -78,28 +80,26 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'gaia_care.wsgi.application'
 
-# Database
+# Configuración de base de datos para MongoDB Atlas con djongo
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'djongo',
+        'NAME': env('MONGO_DB_NAME', default='nombre_de_tu_db'),
+        'CLIENT': {
+            'host': env('MONGO_URI', default='mongodb+srv://gaiacare_admin:gaiacaregatitos@gaiacare.yvvharj.mongodb.net/nombre_de_tu_db?retryWrites=true&w=majority'),
+            'username': env('MONGO_USER', default='gaiacare_admin'),
+            'password': env('MONGO_PASSWORD', default='gaiacaregatitos'),
+            'authMechanism': 'SCRAM-SHA-1',
+        },
     }
 }
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
+    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',},
+    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',},
+    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',},
+    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',},
 ]
 
 # Internationalization
@@ -143,8 +143,14 @@ ACCOUNT_SIGNUP_PASSWORD_ENTER_TWICE = True
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 
-# Email configuración (para desarrollo)
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# Email configuración SMTP con variables de entorno
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = env('EMAIL_HOST', default='smtp.gmail.com')
+EMAIL_USE_TLS = env.bool('EMAIL_USE_TLS', default=True)
+EMAIL_PORT = env.int('EMAIL_PORT', default=587)
+EMAIL_HOST_USER = env('EMAIL_HOST_USER', default='gaiacarenoreply@gmail.com')
+EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD', default='tlyo btdy iimu lefg')
+DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL', default='GaiaCare <gaiacarenoreply@gmail.com>')
 
 # Custom User model
 AUTH_USER_MODEL = 'users.CustomUser'
