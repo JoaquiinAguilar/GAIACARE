@@ -2,7 +2,7 @@ asgiref==3.8.1
 certifi==2025.4.26
 charset-normalizer==3.4.2
 crispy-bootstrap5==2025.4
-Django==4.2.7
+Django==4.2.16
 django-allauth==65.8.0
 django-crispy-forms==2.4
 django-environ==0.12.0
@@ -21,7 +21,7 @@ python-dateutil==2.9.0.post0
 requests==2.32.3
 resend==2.10.0
 six==1.17.0
-# sqlparse==0.2.4  <-- quitar o comentar esta línea
+# sqlparse==0.2.4  # comentar para evitar conflictos con djongo
 typing-extensions==4.13.2
 tzdata==2025.2
 urllib3==2.4.0
