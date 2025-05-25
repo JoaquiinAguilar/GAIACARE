@@ -21,10 +21,9 @@ python-dateutil==2.9.0.post0
 requests==2.32.3
 resend==2.10.0
 six==1.17.0
-sqlparse==0.2.4
+# sqlparse==0.2.4  <-- quitar o comentar esta línea
 typing-extensions==4.13.2
 tzdata==2025.2
 urllib3==2.4.0
 whitenoise==6.9.0
 djongo==1.3.7
-
