@@ -1,0 +1,24 @@
+# Django Core
+Django
+# Django Extensions and Utilities
+django-environ
+django-allauth
+django-crispy-forms
+crispy-bootstrap5
+django-widget-tweaks
+django-filter
+
+# Static Files Management
+whitenoise
+
+# Database (SQLite is built-in, but including for reference)
+# For production, you might want to use PostgreSQL:
+# psycopg2-binary==2.9.9
+
+# Python Standard Library Enhancements
+Pillow  # For image handling in product images
+
+# Development Dependencies (Optional)
+# Uncomment these for development
+# django-debug-toolbar==4.2.0
+# ipython==8.18.1

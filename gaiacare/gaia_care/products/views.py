@@ -1,4 +1,5 @@
 from django.shortcuts import render, get_object_or_404
+from django.http import JsonResponse
 from django.views.generic import ListView, DetailView
 from django.db.models import Q
 from .models import Product, Category
@@ -80,3 +81,17 @@ class CategoryListView(ListView):
     
     def get_queryset(self):
         return Category.objects.filter(is_active=True)
+
+def search_suggestions(request):
+    """Vista para sugerencias de búsqueda (autocomplete)"""
+    query = request.GET.get('q', '')
+    if len(query) < 2:
+        return JsonResponse([], safe=False)
+    
+    products = Product.objects.filter(
+        Q(name__icontains=query) | Q(description__icontains=query),
+        available=True
+    ).values('name', 'slug', 'price')[:5]
+    
+    results = list(products)
+    return JsonResponse(results, safe=False)

@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Verificar Correo Electrónico" %} - Gaia Care{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-7 col-lg-6">
+            <div class="card border-0 shadow-lg">
+                <div class="card-body p-5">
+                    <!-- Icon -->
+                    <div class="text-center mb-4">
+                        <div class="d-inline-flex align-items-center justify-content-center rounded-circle mb-3"
+                            style="width: 80px; height: 80px; background: linear-gradient(135deg, var(--light-pink) 0%, var(--medium-pink) 100%);">
+                            <i class="bi bi-envelope-check" style="font-size: 2.5rem; color: var(--dark-pink);"></i>
+                        </div>
+                    </div>
+
+                    <!-- Title -->
+                    <h1 class="text-center mb-3" style="font-family: 'Libre Bodoni', serif; font-size: 1.75rem;">
+                        Verifica tu Correo Electrónico
+                    </h1>
+
+                    <!-- Main message -->
+                    <p class="text-center text-muted mb-4" style="line-height: 1.6;">
+                        Por favor, comprueba tu bandeja de entrada y haz clic en el enlace para confirmar tu dirección
+                        de correo electrónico.
+                    </p>
+
+                    <!-- Info box with softer styling -->
+                    <div class="mb-4 p-4 rounded"
+                        style="background-color: #f8f9fa; border-left: 4px solid var(--dark-pink);">
+                        <div class="d-flex align-items-start">
+                            <i class="bi bi-info-circle me-3 mt-1"
+                                style="color: var(--dark-pink); font-size: 1.25rem;"></i>
+                            <small class="text-muted" style="line-height: 1.5;">
+                                Te hemos enviado un correo electrónico de verificación. Si no lo encuentras en tu
+                                bandeja de entrada,
+                                revisa tu carpeta de spam o correo no deseado.
+                            </small>
+                        </div>
+                    </div>
+
+                    <!-- Buttons -->
+                    <div class="d-grid gap-2 mb-4">
+                        <a href="{% url 'core:home' %}" class="btn btn-lg"
+                            style="background-color: var(--dark-pink); color: white; border: none;">
+                            Volver al inicio
+                        </a>
+                    </div>
+
+                    <!-- Resend link -->
+                    <div class="text-center">
+                        <small class="text-muted">
+                            ¿No recibiste el correo?
+                            <a href="{% url 'account_email' %}" class="text-decoration-none fw-semibold"
+                                style="color: var(--dark-pink);">
+                                Reenviar verificación
+                            </a>
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

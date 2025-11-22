@@ -1,92 +1,138 @@
-{% extends "base.html" %}
 {% load static %}
+<!DOCTYPE html>
+<html lang="es">
 
-{% block title %}Panel de Control - Gaia Care{% endblock %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Panel de Control - Gaia Care{% endblock %}</title>
 
-{% block content %}
-<div class="dashboard-container">
-    <!-- Sidebar -->
-    <aside class="dashboard-sidebar">
-        <div class="sidebar-header">
-            <a href="{% url 'dashboard:dashboard_home' %}">
-                <img src="{% static 'images/logo.svg' %}" alt="Gaia Care Logo" class="logo">
-            </a>
+    <!-- Google Fonts -->
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Libre+Bodoni:wght@400;500;600;700&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Asap:wght@400;500;600;700&display=swap">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+
+    <!-- Dashboard CSS -->
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+
+    {% block extra_css %}{% endblock %}
+</head>
+
+<body>
+    <!-- Messages -->
+    {% if messages %}
+    <div class="messages-container" style="position: fixed; top: 1rem; right: 1rem; z-index: 9999; max-width: 400px;">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
-        
-        <nav class="sidebar-menu">
-            <a href="{% url 'dashboard:dashboard_home' %}" class="menu-item {% if section == 'home' %}active{% endif %}">
-                <i class="bi bi-speedometer2"></i> Dashboard
-            </a>
-            <a href="{% url 'dashboard:product_list' %}" class="menu-item {% if section == 'products' %}active{% endif %}">
-                <i class="bi bi-box-seam"></i> Productos
-            </a>
-            <a href="{% url 'dashboard:category_list' %}" class="menu-item {% if section == 'categories' %}active{% endif %}">
-                <i class="bi bi-grid"></i> Categorías
-            </a>
-            <a href="{% url 'dashboard:order_list' %}" class="menu-item {% if section == 'orders' %}active{% endif %}">
-                <i class="bi bi-bag"></i> Pedidos
-            </a>
-            <a href="{% url 'dashboard:user_list' %}" class="menu-item {% if section == 'users' %}active{% endif %}">
-                <i class="bi bi-people"></i> Usuarios
-            </a>
-            <a href="{% url 'dashboard:settings' %}" class="menu-item {% if section == 'settings' %}active{% endif %}">
-                <i class="bi bi-gear"></i> Configuración
-            </a>
-            
-            <hr class="my-3">
-            
-            <a href="{% url 'core:home' %}" class="menu-item">
-                <i class="bi bi-house"></i> Ir a la Tienda
-            </a>
-            <a href="{% url 'admin:index' %}" class="menu-item">
-                <i class="bi bi-shield-lock"></i> Administración Django
-            </a>
-            <a href="{% url 'account_logout' %}" class="menu-item">
-                <i class="bi bi-box-arrow-right"></i> Cerrar Sesión
-            </a>
-        </nav>
-    </aside>
-    
-    <!-- Contenido principal -->
-    <div class="dashboard-content">
-        <!-- Botón para móvil -->
-        <button class="sidebar-toggle d-md-none" id="sidebarToggle">
-            <i class="bi bi-list"></i>
-        </button>
-        
-        <!-- Contenido específico -->
-        {% block dashboard_content %}{% endblock %}
+        {% endfor %}
     </div>
-</div>
-{% endblock %}
+    {% endif %}
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="dashboard-sidebar">
+            <div class="sidebar-header">
+                <a href="{% url 'dashboard:dashboard_home' %}">
+                    <img src="{% static 'images/logo.svg' %}" alt="Gaia Care Logo" class="logo">
+                </a>
+            </div>
 
-{% block extra_js %}
-<script>
-    // Código para el menú móvil
-    document.addEventListener('DOMContentLoaded', function() {
-        const sidebarToggle = document.getElementById('sidebarToggle');
-        const container = document.querySelector('.dashboard-container');
-        
-        if (sidebarToggle) {
-            sidebarToggle.addEventListener('click', function() {
-                container.classList.toggle('sidebar-open');
-            });
-        }
-        
-        // Cerrar sidebar al hacer clic en un enlace (en móvil)
-        const menuItems = document.querySelectorAll('.menu-item');
-        menuItems.forEach(item => {
-            item.addEventListener('click', function() {
-                if (window.innerWidth < 768) {
-                    container.classList.remove('sidebar-open');
-                }
+            <nav class="sidebar-menu">
+                <a href="{% url 'dashboard:dashboard_home' %}"
+                    class="menu-item {% if section == 'home' %}active{% endif %}">
+                    <i class="bi bi-speedometer2"></i> Dashboard
+                </a>
+                <a href="{% url 'dashboard:product_list' %}"
+                    class="menu-item {% if section == 'products' %}active{% endif %}">
+                    <i class="bi bi-box-seam"></i> Productos
+                </a>
+                <a href="{% url 'dashboard:category_list' %}"
+                    class="menu-item {% if section == 'categories' %}active{% endif %}">
+                    <i class="bi bi-grid"></i> Categorías
+                </a>
+                <a href="{% url 'dashboard:order_list' %}"
+                    class="menu-item {% if section == 'orders' %}active{% endif %}">
+                    <i class="bi bi-bag"></i> Pedidos
+                </a>
+                <a href="{% url 'dashboard:user_list' %}"
+                    class="menu-item {% if section == 'users' %}active{% endif %}">
+                    <i class="bi bi-people"></i> Usuarios
+                </a>
+                <a href="{% url 'dashboard:settings' %}"
+                    class="menu-item {% if section == 'settings' %}active{% endif %}">
+                    <i class="bi bi-gear"></i> Configuración
+                </a>
+
+                <hr class="my-3">
+
+                <a href="{% url 'core:home' %}" class="menu-item">
+                    <i class="bi bi-house"></i> Ir a la Tienda
+                </a>
+                <a href="{% url 'admin:index' %}" class="menu-item">
+                    <i class="bi bi-shield-lock"></i> Administración Django
+                </a>
+                <a href="{% url 'account_logout' %}" class="menu-item">
+                    <i class="bi bi-box-arrow-right"></i> Cerrar Sesión
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Contenido principal -->
+        <div class="dashboard-content">
+            <!-- Botón para móvil -->
+            <button class="sidebar-toggle d-md-none" id="sidebarToggle">
+                <i class="bi bi-list"></i>
+            </button>
+
+            <!-- Contenido específico -->
+            {% block dashboard_content %}{% endblock %}
+        </div>
+    </div>
+
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    {% block extra_js %}
+    <script>
+        // Código para el menú móvil
+        document.addEventListener('DOMContentLoaded', function () {
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            const container = document.querySelector('.dashboard-container');
+
+            if (sidebarToggle) {
+                sidebarToggle.addEventListener('click', function () {
+                    container.classList.toggle('sidebar-open');
+                });
+            }
+
+            // Cerrar sidebar al hacer clic en un enlace (en móvil)
+            const menuItems = document.querySelectorAll('.menu-item');
+            menuItems.forEach(item => {
+                item.addEventListener('click', function () {
+                    if (window.innerWidth < 768) {
+                        container.classList.remove('sidebar-open');
+                    }
+                });
             });
         });
-    });
-</script>
+    </script>
 
-<!-- Chart.js para gráficos -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Chart.js para gráficos -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-{% block dashboard_scripts %}{% endblock %}
-{% endblock %}
+    {% block dashboard_scripts %}{% endblock %}
+    {% endblock %}
+</body>
+
+</html>
