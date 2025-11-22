@@ -254,45 +254,78 @@ def order_detail(request, order_id):
     order = get_object_or_404(Order, id=order_id)
     
     if request.method == 'POST':
+        updated = False
+        
         # Actualizar estado del pedido
         status = request.POST.get('status')
-        if status:
+        if status and status != order.status:
             order.status = status
             order.save()
+            updated = True
+        
+        # Actualizar información de envío
+        shipping_status = request.POST.get('shipping_status')
+        if shipping_status:
+            order.shipping.status = shipping_status
             
-            # Actualizar estado de envío
-            shipping_status = request.POST.get('shipping_status')
-            if shipping_status:
-                order.shipping.status = shipping_status
-                
-                # Si el pedido se marca como enviado, registrar fecha
-                if shipping_status == 'enviado' and not order.shipping.shipped_date:
-                    order.shipping.shipped_date = timezone.now()
-                
-                # Si el pedido se marca como entregado, registrar fecha
-                if shipping_status == 'entregado' and not order.shipping.delivered_date:
-                    order.shipping.delivered_date = timezone.now()
-                
-                order.shipping.tracking_number = request.POST.get('tracking_number', '')
-                order.shipping.carrier = request.POST.get('carrier', '')
-                order.shipping.notes = request.POST.get('shipping_notes', '')
-                order.shipping.save()
+            # Si el pedido se marca como enviado, registrar fecha
+            if shipping_status == 'enviado' and not order.shipping.shipped_date:
+                order.shipping.shipped_date = timezone.now()
             
-            # Actualizar estado de pago
-            payment_status = request.POST.get('payment_status')
-            if payment_status:
-                order.payment.status = payment_status
-                
-                # Si el pago se marca como completado, registrar fecha
-                if payment_status == 'completado' and not order.payment.payment_date:
-                    order.payment.payment_date = timezone.now()
-                
-                order.payment.transaction_id = request.POST.get('transaction_id', '')
-                order.payment.notes = request.POST.get('payment_notes', '')
-                order.payment.save()
+            # Si el pedido se marca como entregado, registrar fecha
+            if shipping_status == 'entregado' and not order.shipping.delivered_date:
+                order.shipping.delivered_date = timezone.now()
             
+            # Actualizar tracking y notas
+            tracking_number = request.POST.get('tracking_number', '')
+            carrier = request.POST.get('carrier', '')
+            shipping_notes = request.POST.get('shipping_notes', '')
+            
+            if tracking_number != order.shipping.tracking_number:
+                order.shipping.tracking_number = tracking_number
+                updated = True
+            
+            if carrier != order.shipping.carrier:
+                order.shipping.carrier = carrier
+                updated = True
+            
+            if shipping_notes != order.shipping.notes:
+                order.shipping.notes = shipping_notes
+                updated = True
+            
+            order.shipping.save()
+            updated = True
+        
+        # Actualizar información de pago
+        payment_status = request.POST.get('payment_status')
+        if payment_status:
+            order.payment.status = payment_status
+            
+            # Si el pago se marca como completado, registrar fecha
+            if payment_status == 'completado' and not order.payment.payment_date:
+                order.payment.payment_date = timezone.now()
+            
+            # Actualizar transaction ID y notas
+            transaction_id = request.POST.get('transaction_id', '')
+            payment_notes = request.POST.get('payment_notes', '')
+            
+            if transaction_id != order.payment.transaction_id:
+                order.payment.transaction_id = transaction_id
+                updated = True
+            
+            if payment_notes != order.payment.notes:
+                order.payment.notes = payment_notes
+                updated = True
+            
+            order.payment.save()
+            updated = True
+        
+        if updated:
             messages.success(request, 'Pedido actualizado correctamente.')
-            return redirect('dashboard:order_detail', order_id=order.id)
+        else:
+            messages.info(request, 'No se realizaron cambios.')
+        
+        return redirect('dashboard:order_detail', order_id=order.id)
     
     context = {
         'order': order,

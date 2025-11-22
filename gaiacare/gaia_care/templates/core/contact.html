@@ -5,196 +5,225 @@
 {% block title %}Contacto - Gaia Care{% endblock %}
 
 {% block content %}
-    <div class="container py-5">
-        <h1 class="section-title">Contacto</h1>
-        
-        <div class="row">
-            <div class="col-lg-6 mb-5 mb-lg-0">
-                <div class="card border-0 shadow">
-                    <div class="card-body p-5">
-                        <h2 class="mb-4" style="font-family: 'Libre Bodoni', serif;">Escríbenos</h2>
-                        
-                        <form method="post">
-                            {% csrf_token %}
-                            
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <div class="form-group">
-                                        <label for="name">Nombre</label>
-                                        <input type="text" class="form-control" id="name" name="name" placeholder="Tu nombre" required>
-                                    </div>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <div class="form-group">
-                                        <label for="email">Correo Electrónico</label>
-                                        <input type="email" class="form-control" id="email" name="email" placeholder="tu@email.com" required>
-                                    </div>
+<div class="container py-5">
+    <h1 class="section-title">Contacto</h1>
+
+    <div class="row">
+        <div class="col-lg-6 mb-5 mb-lg-0">
+            <div class="card border-0 shadow">
+                <div class="card-body p-5">
+                    <h2 class="mb-4" style="font-family: 'Libre Bodoni', serif;">Escríbenos</h2>
+
+                    <form method="post">
+                        {% csrf_token %}
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <div class="form-group">
+                                    <label for="name">Nombre</label>
+                                    <input type="text" class="form-control" id="name" name="name"
+                                        placeholder="Tu nombre" required>
                                 </div>
                             </div>
-                            
-                            <div class="form-group mb-3">
-                                <label for="subject">Asunto</label>
-                                <input type="text" class="form-control" id="subject" name="subject" placeholder="Asunto del mensaje" required>
+                            <div class="col-md-6 mb-3">
+                                <div class="form-group">
+                                    <label for="email">Correo Electrónico</label>
+                                    <input type="email" class="form-control" id="email" name="email"
+                                        placeholder="tu@email.com" required>
+                                </div>
                             </div>
-                            
-                            <div class="form-group mb-3">
-                                <label for="message">Mensaje</label>
-                                <textarea class="form-control" id="message" name="message" rows="5" placeholder="¿En qué podemos ayudarte?" required></textarea>
-                            </div>
-                            
-                            <div class="form-check mb-4">
-                                <input class="form-check-input" type="checkbox" id="privacy" name="privacy" required>
-                                <label class="form-check-label" for="privacy">
-                                    Acepto la política de privacidad
-                                </label>
-                            </div>
-                            
-                            <button type="submit" class="btn" style="background-color: var(--dark-pink); color: white;">Enviar Mensaje</button>
-                        </form>
-                        
-                        <div class="alert alert-info mt-4">
-                            <small>Este formulario es solo una demostración. Para habilitar su funcionamiento, se deberá configurar el envío de correos en el servidor.</small>
                         </div>
-                    </div>
+
+                        <div class="form-group mb-3">
+                            <label for="subject">Asunto</label>
+                            <input type="text" class="form-control" id="subject" name="subject"
+                                placeholder="Asunto del mensaje" required>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label for="message">Mensaje</label>
+                            <textarea class="form-control" id="message" name="message" rows="5"
+                                placeholder="¿En qué podemos ayudarte?" required></textarea>
+                        </div>
+
+                        <div class="form-check mb-4">
+                            <input class="form-check-input" type="checkbox" id="privacy" name="privacy" required>
+                            <label class="form-check-label" for="privacy">
+                                Acepto la política de privacidad
+                            </label>
+                        </div>
+
+                        <button type="submit" class="btn"
+                            style="background-color: var(--dark-pink); color: white;">Enviar Mensaje</button>
+                    </form>
                 </div>
             </div>
-            
-            <div class="col-lg-6">
-                <div class="card border-0 shadow h-100">
-                    <div class="card-body p-5">
-                        <h2 class="mb-4" style="font-family: 'Libre Bodoni', serif;">Información de Contacto</h2>
-                        
-                        <div class="d-flex mb-4">
-                            <div class="me-3">
-                                <i class="bi bi-geo-alt" style="font-size: 1.5rem; color: var(--dark-pink);"></i>
-                            </div>
-                            <div>
-                                <h5>Dirección</h5>
-                                <p class="mb-0">Periférico Sur Poniente, Colonia ISSSTE<br>Tuxtla Gutiérrez, Chiapas, México</p>
-                            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="card border-0 shadow h-100">
+                <div class="card-body p-5">
+                    <h2 class="mb-4" style="font-family: 'Libre Bodoni', serif;">Información de Contacto</h2>
+
+                    <div class="d-flex mb-4">
+                        <div class="me-3">
+                            <i class="bi bi-geo-alt" style="font-size: 1.5rem; color: var(--dark-pink);"></i>
                         </div>
-                        
-                        <div class="d-flex mb-4">
-                            <div class="me-3">
-                                <i class="bi bi-telephone" style="font-size: 1.5rem; color: var(--dark-pink);"></i>
-                            </div>
-                            <div>
-                                <h5>Teléfono</h5>
-                                <p class="mb-0">+52 961 123 4567</p>
-                            </div>
+                        <div>
+                            <h5>Dirección</h5>
+                            <p class="mb-0">Periférico Sur Poniente, Colonia ISSSTE<br>Tuxtla Gutiérrez, Chiapas, México
+                            </p>
                         </div>
-                        
-                        <div class="d-flex mb-4">
-                            <div class="me-3">
-                                <i class="bi bi-envelope" style="font-size: 1.5rem; color: var(--dark-pink);"></i>
-                            </div>
-                            <div>
-                                <h5>Correo Electrónico</h5>
-                                <p class="mb-0">hola@gaiacare.mx</p>
-                            </div>
+                    </div>
+
+                    <div class="d-flex mb-4">
+                        <div class="me-3">
+                            <i class="bi bi-telephone" style="font-size: 1.5rem; color: var(--dark-pink);"></i>
                         </div>
-                        
-                        <div class="d-flex mb-4">
-                            <div class="me-3">
-                                <i class="bi bi-clock" style="font-size: 1.5rem; color: var(--dark-pink);"></i>
-                            </div>
-                            <div>
-                                <h5>Horario de Atención</h5>
-                                <p class="mb-0">Lunes a Viernes: 9:00 AM - 6:00 PM<br>Sábados: 10:00 AM - 2:00 PM</p>
-                            </div>
+                        <div>
+                            <h5>Teléfono</h5>
+                            <p class="mb-0">+52 961 123 4567</p>
                         </div>
-                        
-                        <h5 class="mt-5 mb-3">Síguenos en Redes Sociales</h5>
-                        <div class="social-icons">
-                            <a href="#" class="me-3" style="font-size: 1.5rem; color: var(--dark-pink);"><i class="bi bi-facebook"></i></a>
-                            <a href="#" class="me-3" style="font-size: 1.5rem; color: var(--dark-pink);"><i class="bi bi-instagram"></i></a>
-                            <a href="#" class="me-3" style="font-size: 1.5rem; color: var(--dark-pink);"><i class="bi bi-twitter"></i></a>
-                            <a href="#" class="me-3" style="font-size: 1.5rem; color: var(--dark-pink);"><i class="bi bi-pinterest"></i></a>
+                    </div>
+
+                    <div class="d-flex mb-4">
+                        <div class="me-3">
+                            <i class="bi bi-envelope" style="font-size: 1.5rem; color: var(--dark-pink);"></i>
                         </div>
+                        <div>
+                            <h5>Correo Electrónico</h5>
+                            <p class="mb-0">hola@gaiacare.mx</p>
+                        </div>
+                    </div>
+
+                    <div class="d-flex mb-4">
+                        <div class="me-3">
+                            <i class="bi bi-clock" style="font-size: 1.5rem; color: var(--dark-pink);"></i>
+                        </div>
+                        <div>
+                            <h5>Horario de Atención</h5>
+                            <p class="mb-0">Lunes a Viernes: 9:00 AM - 6:00 PM<br>Sábados: 10:00 AM - 2:00 PM</p>
+                        </div>
+                    </div>
+
+                    <h5 class="mt-5 mb-3">Síguenos en Redes Sociales</h5>
+                    <div class="social-icons">
+                        <a href="#" class="me-3" style="font-size: 1.5rem; color: var(--dark-pink);"><i
+                                class="bi bi-facebook"></i></a>
+                        <a href="#" class="me-3" style="font-size: 1.5rem; color: var(--dark-pink);"><i
+                                class="bi bi-instagram"></i></a>
+                        <a href="#" class="me-3" style="font-size: 1.5rem; color: var(--dark-pink);"><i
+                                class="bi bi-twitter"></i></a>
+                        <a href="#" class="me-3" style="font-size: 1.5rem; color: var(--dark-pink);"><i
+                                class="bi bi-pinterest"></i></a>
                     </div>
                 </div>
             </div>
         </div>
-        
-        <div class="row mt-5">
-            <div class="col-12">
-                <h2 class="mb-4 text-center" style="font-family: 'Libre Bodoni', serif;">Nuestra Ubicación</h2>
-                <div class="ratio ratio-16x9">
-                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15281.096228281324!2d-93.15498!3d16.75499!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x85ecd9a3a7ae3d59%3A0xd23a19c4c61cd6ec!2sTuxtla%20Guti%C3%A9rrez%2C%20Chis.!5e0!3m2!1ses!2smx!4v1651764042089!5m2!1ses!2smx" 
-                        allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" class="border-0 rounded shadow"></iframe>
-                </div>
+    </div>
+
+    <div class="row mt-5">
+        <div class="col-12">
+            <h2 class="mb-4 text-center" style="font-family: 'Libre Bodoni', serif;">Nuestra Ubicación</h2>
+            <div class="ratio ratio-16x9">
+                <iframe
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3820.087896954287!2d-93.17244!3d16.7586637!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTbCsDQ1JzMxLjIiTiA5M8KwMTAnMTIuOCJX!5e0!3m2!1ses!2smx!4v1700000000000!5m2!1ses!2smx"
+                    allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
+                    class="border-0 rounded shadow"></iframe>
             </div>
         </div>
-        
-        <div class="row mt-5">
-            <div class="col-12">
-                <div class="card border-0 shadow">
-                    <div class="card-body p-5">
-                        <h2 class="mb-4 text-center" style="font-family: 'Libre Bodoni', serif;">Preguntas Frecuentes</h2>
-                        
-                        <div class="accordion" id="faqAccordion">
-                            <div class="accordion-item">
-                                <h2 class="accordion-header" id="headingOne">
-                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                        ¿Cuánto tiempo duran los perfumes sólidos?
-                                    </button>
-                                </h2>
-                                <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#faqAccordion">
-                                    <div class="accordion-body">
-                                        Nuestros perfumes sólidos tienen una duración aproximada de 4-6 horas en la piel, dependiendo del tipo de piel y la intensidad del aroma. En cuanto al producto en sí, con un uso diario moderado, puede durar de 3 a 6 meses.
-                                    </div>
+    </div>
+
+    <div class="row mt-5">
+        <div class="col-12">
+            <div class="card border-0 shadow">
+                <div class="card-body p-5">
+                    <h2 class="mb-4 text-center" style="font-family: 'Libre Bodoni', serif;">Preguntas Frecuentes</h2>
+
+                    <div class="accordion" id="faqAccordion">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingOne">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                    ¿Cuánto tiempo duran los perfumes sólidos?
+                                </button>
+                            </h2>
+                            <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne"
+                                data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    Nuestros perfumes sólidos tienen una duración aproximada de 4-6 horas en la piel,
+                                    dependiendo del tipo de piel y la intensidad del aroma. En cuanto al producto en sí,
+                                    con un uso diario moderado, puede durar de 3 a 6 meses.
                                 </div>
                             </div>
-                            
-                            <div class="accordion-item">
-                                <h2 class="accordion-header" id="headingTwo">
-                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                                        ¿Los envases son realmente compostables?
-                                    </button>
-                                </h2>
-                                <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#faqAccordion">
-                                    <div class="accordion-body">
-                                        Sí, todos nuestros envases están hechos de materiales 100% biodegradables como papel reciclado, cartón, bambú o bioplásticos derivados de materias vegetales. Pueden compostarse en casa o en instalaciones industriales de compostaje.
-                                    </div>
+                        </div>
+
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingTwo">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                    ¿Los envases son realmente compostables?
+                                </button>
+                            </h2>
+                            <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo"
+                                data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    Sí, todos nuestros envases están hechos de materiales 100% biodegradables como papel
+                                    reciclado, cartón, bambú o bioplásticos derivados de materias vegetales. Pueden
+                                    compostarse en casa o en instalaciones industriales de compostaje.
                                 </div>
                             </div>
-                            
-                            <div class="accordion-item">
-                                <h2 class="accordion-header" id="headingThree">
-                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                                        ¿Realizan envíos a todo México?
-                                    </button>
-                                </h2>
-                                <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#faqAccordion">
-                                    <div class="accordion-body">
-                                        Sí, realizamos envíos a toda la República Mexicana. El tiempo de entrega varía entre 3-7 días hábiles dependiendo de la localidad. Para pedidos internacionales, por favor contáctanos directamente.
-                                    </div>
+                        </div>
+
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingThree">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                    ¿Realizan envíos a todo México?
+                                </button>
+                            </h2>
+                            <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree"
+                                data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    Sí, realizamos envíos a toda la República Mexicana. El tiempo de entrega varía entre
+                                    3-7 días hábiles dependiendo de la localidad. Para pedidos internacionales, por
+                                    favor contáctanos directamente.
                                 </div>
                             </div>
-                            
-                            <div class="accordion-item">
-                                <h2 class="accordion-header" id="headingFour">
-                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
-                                        ¿Sus productos son aptos para todo tipo de piel?
-                                    </button>
-                                </h2>
-                                <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour" data-bs-parent="#faqAccordion">
-                                    <div class="accordion-body">
-                                        Formulamos nuestros productos para que sean aptos para la mayoría de tipos de piel, incluyendo pieles sensibles. Sin embargo, siempre recomendamos realizar una prueba de parche antes de usar cualquier producto por primera vez, especialmente si tienes alergias conocidas.
-                                    </div>
+                        </div>
+
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingFour">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                                    ¿Sus productos son aptos para todo tipo de piel?
+                                </button>
+                            </h2>
+                            <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour"
+                                data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    Formulamos nuestros productos para que sean aptos para la mayoría de tipos de piel,
+                                    incluyendo pieles sensibles. Sin embargo, siempre recomendamos realizar una prueba
+                                    de parche antes de usar cualquier producto por primera vez, especialmente si tienes
+                                    alergias conocidas.
                                 </div>
                             </div>
-                            
-                            <div class="accordion-item">
-                                <h2 class="accordion-header" id="headingFive">
-                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
-                                        ¿Cómo debo cuidar mi perfume sólido?
-                                    </button>
-                                </h2>
-                                <div id="collapseFive" class="accordion-collapse collapse" aria-labelledby="headingFive" data-bs-parent="#faqAccordion">
-                                    <div class="accordion-body">
-                                        Para mantener tu perfume sólido en óptimas condiciones, te recomendamos mantenerlo en un lugar fresco y seco, alejado de la luz solar directa. Siempre cierra bien el envase después de usarlo para conservar su aroma. Evita dejarlo en lugares calientes como el auto o cerca de fuentes de calor.
-                                    </div>
+                        </div>
+
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingFive">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
+                                    ¿Cómo debo cuidar mi perfume sólido?
+                                </button>
+                            </h2>
+                            <div id="collapseFive" class="accordion-collapse collapse" aria-labelledby="headingFive"
+                                data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    Para mantener tu perfume sólido en óptimas condiciones, te recomendamos mantenerlo
+                                    en un lugar fresco y seco, alejado de la luz solar directa. Siempre cierra bien el
+                                    envase después de usarlo para conservar su aroma. Evita dejarlo en lugares calientes
+                                    como el auto o cerca de fuentes de calor.
                                 </div>
                             </div>
                         </div>
@@ -203,4 +232,5 @@
             </div>
         </div>
     </div>
+</div>
 {% endblock %}
